@@ -1,0 +1,179 @@
+{% extends 'base/base.html' %}
+{% block title %}统计表{% endblock %}
+{% block center_cen %}
+{% load staticfiles %}
+{% include 'base/form.html' %}
+
+    <div align="center" id="tongji">
+    {% load mvote %}
+
+        {% if result9 %}
+        <table border="1" class="dataframe" id="huizong_mingxi">
+        <tr><th colspan="10" style="font-size: 20px;background-color:#FFFFFF;">汇 总</th></tr>
+        <tr>
+            <th>开始日期</th>
+      <th>账号</th>
+            <th>合约</th>
+        <th>赚得金额</th>
+        <th>多单数量</th>
+        <th>空单数量</th>
+            <th>下单总数</th><th>赢利单数</th><th>准确率(%)</th><th> 回测 </th>
+        </tr>
+        {% for j,i in huizong.items %}
+        <tr bgcolor="{% cycle '#cccc33' '#00cc00' %}">
+            <td>{{ i.0 }}</td>
+        <td><a style="color:#0000ff;text-decoration:none;" href="{% url 'tongji' %}?type=4&datetimes={{ i.0 }}&user={{ i.1 }}&end_date={{ end_date }}">{{ i.1 }}</a></td>
+        <td><a style="color:#0000ff;" href="{% url 'tongji_bs' %}?host={{ i.1 }}&code={{ i.2 }}&start_date={{ i.0 }}" target="_blank" title="买卖点">{{ i.2 }}</a></td>
+        <td>{{ i.3|floatformat:1 }}</td>
+        <td>{{ i.4|floatformat:0 }}</td>
+        <td>{{ i.5|floatformat:0 }}</td><td>{{ i.6|floatformat:0 }}</td><td>{{ i.7|floatformat:0 }}</td>
+            <td>{{ i.8 }}</td>
+            <td>
+                <a style="color:#0000ff;" href="{% url 'tongji' %}?{% if rq_type == '4' %}type=5{% else %}type=2{% endif %}&datetimes={{ rq_date }}&id={{ i.1 }}&end_date={{ end_date }}" target="_blank">
+                    <img src="{% static 'images/b7.ico' %}" style="width:30px;height:30px;margin-bottom:1px;" title="开始回测"/>
+                </a>
+            </td>
+            <!--<td><a style="color:#0000ff;text-decoration:none;" href="{% url 'tongji' %}?type=1&datetimes={{ i.0 }}&id={{ i.1 }}&end_date={{ end_date }}">{{ i.8 }}</a></td>-->
+        </tr>
+        {% endfor %}
+            {% for j,i in huizong2.items %}
+            {% if end_date != i.0 %}
+            <tr><th colspan="10" style="font-size: 18px;">日汇总（{{ j }}）</th></tr>
+            <tr><th>日期</th><th>盈亏</th><th>多单</th><th>空单</th><th>盈利单数</th><th>准确率</th><th>合约</th><th>正向加仓</th><th>反向加仓</th><th>最大持仓</th></tr>
+            {% for k,v in i.15.items %}
+             <tr class="rhztr" bgcolor="{% cycle '#cccc33' '#00cc00' %}"> <!-- bgcolor="{% cycle '#f6f6f6' '#ffffff' %}" -->
+            <td>{{ v.0 }}</td>
+        <td>{{ v.2|floatformat:1 }}</td>
+        <td>{{ v.3|floatformat:0 }}</td>
+        <td>{{ v.4|floatformat:0 }}</td>
+        <!--<td>{{ v.5 }}</td>-->
+                 <td>{{ v.6|floatformat:0 }}</td><td>{{ v.7|floatformat:0 }}</td>
+            <td>
+                <a value="{% url 'tongji' %}?type=5&datetimes={{ v.0 }}&id={{ v.1 }}&end_date={{ v.0 }}" target="_blank" style="color:black;">
+                    {{ v.14 }}
+                </a>
+            </td>
+            <td>{{ v.9 }} ({{ v.11|floatformat:0 }})</td><td>{{ v.10 }} ({{ v.12|floatformat:0 }})</td><td>{{ v.13 }}</td>
+             <!-- <a style="color:#0000ff;text-decoration:none;" href="{% url 'tongji' %}?type=1&datetimes={{ v.0 }}&id={{ i.1 }}&end_date={{ end_date }}"></a> -->
+        </tr>
+            {% endfor %}
+            {% endif %}
+        {% endfor %}
+        <tr><th colspan="10" style="font-size: 20px;background-color:#FFFFFF;">明 细</th></tr>
+    <tr>
+      <th>账户</th>
+        <th>合约</th>
+      <th>开仓时间</th>
+      <th>开仓价格</th>
+      <th>平仓时间</th>
+      <th>平仓价格</th>
+      <th>盈亏</th>
+        <th>多空</th>
+        <th>手数</th>
+        <th>交易状态</th>
+    </tr>
+            {% for i in result9 %}
+    <tr bgcolor="{% cycle '#cccc33' '00cc00' %}">
+      <td>{{ i.0 }}</td>
+      <td>{{ i.1 }}</td>
+      <td>{{ i.2 }}</td>
+        <td>{{ i.3 }}</td>
+      <td>{{ i.4|default:'' }}</td>
+      <td>{{ i.5|default:'' }}</td>
+        <td>{{ i.6|default:'' }}</td>
+      <td>{{ i.7 }}</td>
+        <td>{{ i.8 }}</td>
+      <!--<td>{{ i.9 }}</td>-->
+        <td>{{ i.9 }}</td>
+    </tr>
+        {% endfor %}
+
+        </table>
+    {% elif monijy or sjjy %}
+        <div id="ssjy">
+
+            </div>
+    {% else %}
+        <h3 style="color:green;">暂无数据</h3>
+    {% endif %}
+    </div>
+<div style="display:none">
+    <form method="POST" action="" id="form_up_del">
+        <input type="text" name="id" id="f_id">
+        <input type="text" name="name" id="f_name">
+        <input type="text" name="en" id="f_en">
+        <input type="password" id="f_pass">
+    </form>
+</div>
+    <script type="text/javascript">
+
+
+
+$('table').css({'width': '1000px', 'cellpadding': 'auto', 'text-align': 'center', 'rules': 'all'});
+//$("tr:odd").css({"background-color": "#cccc33"});
+//$('tr:even').css({'background-color': '#00cc00'});
+$('tr').css({'height': '30'});
+
+$(".zhztr").click(function(){
+    window.open($(this).find('a').attr('value'));
+});
+$(".zhztr").hover(function(){
+    $(this).css({'backgroundColor':'#f0f0f0','cursor':'pointer'});
+},function(){
+    $(this).css('backgroundColor','#fff');
+});
+var the_color=null;
+$(".rhztr").click(function(){
+    window.open($(this).find('a').attr('value'));
+});
+$(".rhztr").hover(function(){
+    the_color = $(this).css('backgroundColor');
+    $(this).css({'backgroundColor':'#f0f0f0','cursor':'pointer'});
+},function(){
+    $(this).css('backgroundColor',the_color);
+    //$(this).css('backgroundColor','#fff');
+});
+
+
+//提交
+function formSubmit(id,name,en,pass,types){
+        var form = $("<form method='POST' action=''>{% csrf_token %}</form>");
+        form.append($("<input type='text'>").val(id).attr('name','id'));
+        form.append($("<input type='text'>").val(name).attr('name','name'));
+        form.append($("<input type='text'>").val(en).attr('name','en'));
+        form.append($("<input type='password'>").val(pass).attr('name','pass'));
+        form.append($("<input type='text'>").val(types).attr('name','types'));
+        form.appendTo(document.body);
+        form.submit();
+        document.body.removeChild(form[0]);
+}
+
+
+var cid=null;
+
+function openLogin(id){
+   cid = id;
+   document.getElementById("password_div").style.display="";
+   $("#div_password").focus();
+   $('#div_password').bind('keyup', function(event) {
+　　if (event.keyCode == "13") {
+　　　　//回车执行
+　　　　$('#div_password_update').click();
+       }
+    });
+}
+function closeLogin(sta){
+    var password = $("#div_password").val();
+    //alert(password+' '+cid+' '+sta);
+    if(sta=="update"){
+        update_name(cid,password);
+    }else if(sta=="delete"){
+        delete_user(cid,password);
+    }
+   document.getElementById("password_div").style.display="none";
+}
+
+var messagess='{{messagess}}';
+if(messagess.length>0){alert(messagess);}
+    </script>
+{% endblock %}

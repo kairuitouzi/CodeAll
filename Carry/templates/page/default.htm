@@ -1,0 +1,350 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Kleenex - Fully Responsive Business Template</title>
+<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+<link href="css/style.css" type="text/css" rel="stylesheet" media="screen" /> <!-- General style -->
+<link href="css/flexslider.css" type="text/css" rel="stylesheet" media="screen"> <!-- FlexSlider -->
+<link href="css/jcarousel.css" type="text/css" rel="stylesheet" media="screen" /> <!-- list_work -->
+<link rel="stylesheet" href="css/mosaic.css" type="text/css" media="screen" /><!-- mosaic -->
+<link href="css/prettyPhoto.css" type="text/css" rel="stylesheet" media="screen"><!-- prettyPhoto -->
+<link href="css/tipsy.css" type="text/css" rel="stylesheet" media="screen"><!--tooltip-->
+<link href='../../../../fonts.googleapis.com/css@family=Open+Sans_3A400,300,600,700_7CArvo_3A400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+
+<script type="text/javascript" src="js/css3-mediaqueries.js"></script><!--mediaqueries-->
+<script type="text/javascript" src="js/modernizr-1.7.min.js"></script><!--modernizr-->
+<script type="text/javascript" src="js/ddsmoothmenu.js"> </script> <!--menu--> 
+<script type="text/javascript" src="js/jquery.flexslider-min.js"></script> <!-- FlexSlider -->
+<script type="text/javascript" src="js/jquery.jcarousel.min.js"> </script> <!-- list_work -->
+<script type="text/javascript" src="js/mosaic.1.0.1.js"></script> <!-- mosaic -->
+<script type="text/javascript" src="js/jquery.prettyPhoto.js"></script><!-- prettyPhoto -->
+<script type="text/javascript" src="js/jquery.tipsy.js"></script><!--tooltip-->
+<script type="text/javascript" src="js/grayscale-image.js"></script><!-- Grayscale Image -->
+<!--menu--> 
+<script type="text/javascript"> 
+ddsmoothmenu.init({
+	mainmenuid: "smoothmenu1", //menu DIV id
+	orientation: 'h', //Horizontal or vertical menu: Set to "h" or "v"
+	classname: 'ddsmoothmenu', //class added to menu's outer DIV
+	//customtheme: ["#1c5a80", "#18374a"],
+	contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
+	})
+$(window).load(function() {
+$('a.tip').tipsy({fade: true, gravity: 's'});
+});
+</script>
+<!--BEGIN:SELECTED MENU-->
+<script type="text/javascript">
+	 // DOM ready
+	 $(function() {
+	   
+      // Create the dropdown base
+      $("<select />").appendTo("nav");
+      
+      // Create default option "Go to..."
+      $("<option />", {
+         "selected": "selected",
+         "value"   : "",
+         "text"    : "Go to..."
+      }).appendTo("nav select");
+      
+      // Populate dropdown with menu items
+      $("nav a").each(function() {
+       var el = $(this);
+       $("<option />", {
+           "value"   : el.attr("href"),
+           "text"    : el.text()
+       }).appendTo("nav select");
+      });
+      
+	   // To make dropdown actually work
+	   // To make more unobtrusive: http://css-tricks.com/4064-unobtrusive-page-changer/
+      $("nav select").change(function() {
+        window.location = $(this).find("option:selected").val();
+      });
+	 
+	 });
+</script>
+
+<!--featured slider--> 
+<script type="text/javascript">
+$(window).load(function() {
+	$('.flexslider').flexslider();
+});	
+</script>
+<!--mosaic--> 
+<script type="text/javascript">
+jQuery(function($){
+	$('.circle, .vid, .views').mosaic({
+		opacity		:	0.8			//Opacity for overlay (0-1)
+	});	    
+});
+</script>
+<!--List work-->
+<script type="text/javascript">
+function mycarousel_initCallback(carousel){
+    // Disable autoscrolling if the user clicks the prev or next button.
+    carousel.buttonNext.bind('click', function() {
+        carousel.startAuto(0);
+    });
+    carousel.buttonPrev.bind('click', function() {
+        carousel.startAuto(0);
+    });
+    // Pause autoscrolling if the user moves with the cursor over the clip.
+    carousel.clip.hover(function() {
+        carousel.stopAuto();
+    }, function() {
+        carousel.startAuto();
+    });
+};
+jQuery(document).ready(function() {
+    jQuery('#mycarousel').jcarousel({
+        auto: 4,
+        wrap: 'last',
+        initCallback: mycarousel_initCallback
+    });
+});
+</script>
+<!--Pretty Photo Animate-->
+<script type="text/javascript">
+$(window).load(function() {
+$("a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'fast',slideshow:10000, hideflash: true});
+var $container = $('#works-container');
+});
+</script>
+<!--Go To Top-->
+	<script type="text/javascript"> 
+    $(function() {
+        $(window).scroll(function() {
+            if($(this).scrollTop() > 200) {
+                $('#top-area').fadeIn();	
+            } else {
+                $('#top-area').fadeOut();
+            }
+        });
+     
+        $("#totop, #gotop").click(function(){
+		$('html, body').animate({ scrollTop: 0 }, 800);
+		})
+    });
+    </script>
+</head>
+
+<body>
+	<div id="top-area">
+    	<div id="top-wrap">
+        	<ul class="social_media">
+            	<li class="first"><a href="#" class="tip" title="LinkedIn"><img src="images/social-linkedin-32x32.png" alt="LinkedIn" /></a></li>
+                <li><a href="#" class="tip" title="Dribbble"><img src="images/social-dribbble-32x32.png" alt="Dribbble" /></a></li>
+                <li><a href="#" class="tip" title="Facebook"><img src="images/social-facebook-32x32.png" alt="Facebook" /></a></li>
+                <li><a href="#" class="tip" title="Flickr"><img src="images/social-flickr-32x32.png" alt="Flickr" /></a></li>
+                <li><a href="#" class="tip" title="Twitter"><img src="images/social-twitter-32x32.png" alt="Twitter" /></a></li>
+            	<li><a href="#" class="tip" title="Wordpress"><img src="images/social-wordpress-32x32.png" alt="Wordpress" /></a></li>
+                <li><a href="#" class="tip" title="Skype"><img src="images/social-skype-32x32.png" alt="Skype" /></a></li>
+                <li><a href="#" class="tip" title="RSS"><img src="images/social-rss-32x32.png" alt="RSS" /></a></li>
+            </ul>
+    		<span id="gotop"><a href="#" title="Back to top">&dagger;</a></span>
+        </div>
+    </div> 
+	<header>
+        <div id="header_wrap">
+            <h1 class="logo"><a href="index.html">Kleenex</a></h1>
+            <nav id="smoothmenu1" class="ddsmoothmenu">
+                <ul>
+                    <li><a href="index.html" class="current no-border-left">Home</a></li>
+                    <li><a href="about.html">About</a>
+                    	<ul>
+                        	<li class="no-border-top"><a href="services.html">Services</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a>
+                    <ul>
+                        <li class="no-border-top"><a href="single.html">Single</a></li>
+                    </ul>
+                    </li>
+                    <li><a href="#">Portfolio</a>
+                    <ul>
+                        <li class="no-border-top"><a href="portfolio.html">Portfolio Filterable</a></li>
+                        <li><a href="portfolio2.html">Portfolio 2 Column</a></li>
+                        <li><a href="portfolio3.html">Portfolio 3 Column</a></li>
+                        <li><a href="portfolio4.html">Portfolio 4 Column</a></li>
+                        <li><a href="portfolio-sidebar.html">Portfolio with Sidebar</a></li>
+                        <li><a href="portfolio-detail.html">Portfolio with Detail</a></li>
+                    </ul>
+                    </li>
+                    <li><a href="#">Pages</a>
+                    	<ul>
+                        	<li class="no-border-top"><a href="testimonial.html">Testimonial Page</a></li>
+                            <li><a href="faqs.html">FAQs Page</a></li>
+                            <li><a href="column.html">Column Page</a></li>
+                            <li><a href="fullwidth.html">Fullwidth Page</a></li>
+                            <li><a href="button.html">Button Page</a></li>
+                            <li><a href="list.html">List Page</a></li>
+                            <li><a href="typography.html">Typography Page</a></li>
+                            <li><a href="404page.html">404 Page</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header><!--end:header-->
+	<div id="page_wrap">
+    	<h2 class="intro-title">Hello! We are <a href="index.html">Kleenex</a> a Clean Minimal &amp; Functional Web Design Agency Based in Cagayan de Oro Philippines. We enjoy creating Mobile &amp; Web apps with Responsive Style</h2>
+        <div id="featured">
+        <div class="flexslider clearfix">
+        	<ul class="slides">
+            	<li><a href="#"><img src="images/featured/featured-1.jpg" alt="Image" /></a>
+                	<div class="flex-caption">
+                    	<h3>Supercool!!!</h3>
+                		<p>&mdash; Hello! here is the most fully Responsive Template ever... it has unique, clean and smooth design.</p>
+                        <span><a href="#">Read more </a></span>
+                    </div>
+                </li>
+                <li><a href="#"><img src="images/featured/featured-2.jpg" alt="Image" /></a>
+                	<div class="flex-caption">
+                    	<h3>When just I thought</h3>
+                		<p>&mdash; I realize that this template was not good but instead of worrying I am happy b'coz there's a lot of people who are love and like this.</p>
+                        <span><a href="#">Read more</a></span>
+                    </div>
+                </li>
+                <li><a href="#"><img src="images/featured/featured-3.jpg" alt="Image" /></a>
+                	<div class="flex-caption">
+                    	<h3>Louie Jie said: Be creative...</h3>
+                		<p>&mdash; To be successful you must descipline yourself first, act like a good person, be reponsible, be smart and obey God.</p>
+                        <span><a href="#">Read more</a></span>
+                    </div>
+                </li>
+                <li>
+                	<div class="slider-video-container">
+					</div>
+                </li>
+            </ul>
+        </div><!--end:flexslider-->
+        </div>
+        <div id="page_container">
+            <div class="intro">
+                <div class="one-third first">
+                    <h3>A little About us</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac rutrum metus. Nulla eu orci lacus. Quisque viverra urna vel ipsum condimentum aliquam a vitae massa. Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="about.html">Read more</a></p>
+                </div>
+                <div class="one-third">
+                	<div class="sec"><a href="blog.html"><img src="images/blog/thumb-blog-1.jpg" alt="" /></a><span>May 20<br> 2012</span></div>
+                    <h3>The Greatest Theme</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac rutrum metus. Nulla eu orci lacus. Quisque viverra urna vel ipsum condimentum aliquam a vitae massa. <a href="about.html">Learn more</a></p>
+                </div>
+                <div class="one-third last">
+                	<h3>Twitter Updates</h3>
+                    <p><a href="#">@louiejie:</a>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac rutrum metus.</p>
+                    <p><a href="#">@John Doe:</a>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac rutrum metus.</p>
+                </div>
+            </div><!--end:intro-->
+            <div class="page-title">
+                <h3>Latest Work</h3>
+            </div>
+            <div class="list_work">
+        	<ul id="mycarousel" class="jcarousel-skin-tango ">
+            	<li class="mosaic-block1 circle"><a href="images/preview/work_2_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-1.jpg" alt="" />
+                <span>3D Architecture Visualization<br><small>by: Sub-Zero</small></span></li>
+                <li class="mosaic-block1 circle"><a href="images/preview/work_2_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-2.jpg" alt="" />
+                <span>Phlagleblast 13 Teaser<br><small>by: Kenjiboy</small></span></li>
+                <li class="mosaic-block1 circle"><a href="images/preview/work_2_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-3.jpg" alt="" />
+                <span>ThinkMaze<br><small>by: Igor Donkov</small></span></li>
+                <li class="mosaic-block1 circle"><a href="images/preview/work_2_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-4.jpg" alt="" />
+                <span>Smile!<br><small>by: IVictor Traskovsky</small></span></li>
+                <li class="mosaic-block1 circle"><a href="images/preview/work_2_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-1.jpg" alt="" />
+                <span>3D Architecture Visualization<br><small>by: Sub-Zero</small></span></li>
+                <li class="mosaic-block1 circle"><a href="images/preview/work_2_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-2.jpg" alt="" />
+                <span>Phlagleblast 13 Teaser<br><small>by: Kenjiboy</small></span></li>
+            </ul>
+        </div><!--end:list_work-->
+        <div class="page-title">
+        	<h3>Featured services</h3>
+        </div>
+        <div class="one-fourth serv first">
+        	<img src="images/serv-1.png" alt="" />
+        	<h3>Web Marketing</h3>
+            <p>Quisque eget ligula nulla, malesuada accumsan tellus. Quisque tincidunt, est ac interdum tempor, erat est molestie lacus, sed convallis lorem elit vitae eros. </p>
+        </div>
+        <div class="one-fourth serv">
+        	<img src="images/serv-2.png" alt="" />
+        	<h3>Help Support</h3>
+            <p>Quisque eget ligula nulla, malesuada accumsan tellus. Quisque tincidunt, est ac interdum tempor, erat est molestie lacus, sed convallis lorem elit vitae eros. </p>
+        </div>
+        <div class="one-fourth serv second">
+        	<img src="images/serv-3.png" alt="" />
+        	<h3>System Security</h3>
+            <p>Quisque eget ligula nulla, malesuada accumsan tellus. Quisque tincidunt, est ac interdum tempor, erat est molestie lacus, sed convallis lorem elit vitae eros. </p>
+        </div>
+        <div class="one-fourth serv">
+        	<img src="images/serv-4.png" alt="" />
+        	<h3>Video Application</h3>
+            <p>Quisque eget ligula nulla, malesuada accumsan tellus. Quisque tincidunt, est ac interdum tempor, erat est molestie lacus, sed convallis lorem elit vitae eros. </p>
+        </div>
+        </div><!--end:page_container-->
+    </div><!--end:page_wrap-->
+    <footer>
+    	<div id="footer-wrap">
+        	<span id="totop"><a href="#" title="Back to top">top</a></span>
+        	<div class="one-fourth first">
+            	<h3>Contact Details</h3>
+                <p>Telephone: +1234 567 8910<br>
+					Fax: 1098 765 4321<br>
+					E-mail: <a href="#">louiejiemahusay@gmail.com</a></p>
+                <p>Zone 8, Upper Puerto, Cagayan de Oro City, Philippines</p>    
+                <h3>Sign up for our newsletter</h3>
+                <form action="#" method="POST" class="subs">
+                    <fieldset>
+                        <input type="text" name="emailadd" class="emailadd" value="Type your email address" onBlur="if (this.value == ''){this.value = 'Type your email address'; }" onFocus="if (this.value== 'Type your email address') {this.value = ''; }" />
+                    	<input type="submit" name="submit" value="Go" class="submit" />
+                	</fieldset>
+                </form>
+            </div>
+            <div class="one-fourth">
+            	<h3>Related Links</h3>
+                <ul class="links">
+                	<li><a href="#">html5awesome</a></li>
+                    <li><a href="#">Themeforest</a></li>
+                    <li><a href="#">Mojo Themes</a></li>
+                    <li><a href="#">Webdesignledger</a></li>
+                    <li><a href="#">Smashing Magazine</a></li>
+                    <li><a href="#">Web Appers</a></li>
+					<li><a href="#">The Best Design</a></li>
+                </ul>
+            </div>
+            <div class="one-fourth second">
+            	<h3>Flickr Stream</h3>
+                <ul class="flickr ">
+                	<li class="first"><a href="#"><img src="images/flickr/flickr-1.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-2.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-3.jpg" alt="" /></a></li>
+                    <li class="first"><a href="#"><img src="images/flickr/flickr-4.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-5.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-6.jpg" alt="" /></a></li>
+                    <li class="first"><a href="#"><img src="images/flickr/flickr-7.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-8.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-9.jpg" alt="" /></a></li>
+                </ul>
+            </div>
+            <div class="one-fourth">
+            	<h3>Any question just contact us!</h3>
+                <form action="#" method="POST" class="quick-contact">
+                    <fieldset>
+                        <input type="text" name="emailadd" class="emailadd" value="Email Address" onBlur="if (this.value == ''){this.value = 'Email Address'; }" onFocus="if (this.value== 'Email Address') {this.value = ''; }" />
+                        <textarea name="message" rows="4" cols="10" onBlur="if (this.value == ''){this.value = 'Your Message'; }" onFocus="if (this.value == 'Your Message') {this.value = '';}">Your Message</textarea>
+                        <input type="submit" name="submit" class="submit" value="Send">
+                	</fieldset>
+                </form>
+            </div>
+        </div><!--end:footer-wrap-->
+        <div id="copyright">
+        	<div id="copy-wrap">
+    			<p>&copy; Copyright &copy; 2013.Company name All rights reserved.<a target="_blank" href="http://www.cssmoban.com/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>
+            </div>
+    	</div>
+    </footer><!--end:footer-->
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+*.py[cod]
+*.conf
+*.sqlite3
+*.m
+*.txt
+*.pkl
+*.log
+*.png
+*.pick
+*.jpg
+*.xml
+*.xls
+*.csv
+*.db
+pypass.py
+checkpoint
+*.ckpt*

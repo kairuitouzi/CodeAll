@@ -1,0 +1,2266 @@
+{% extends 'base/base.html' %}
+{% block title %}图表{% endblock %}
+{% block script %}
+<style>
+
+.huatut tr{border:1px solid #999;}
+.huatut td{ border:0px;height:40px; }
+</style>
+{% endblock %}
+{% block center_cen %}
+{% load staticfiles %}
+<script src="{% static 'js/pdf/jspdf.debug.js' %}"></script>
+<script src="{% static 'js/pdf/html2canvas.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
+
+    {% if zx_x %}
+    <div align="center">
+        <div id="export_content" class="tuxiantp" style="display:none;">
+            <div id="tuxiantp1" style="width:1200px;height:600px;font-size:18px;"><h2><a href="javascript:location.reload()">交易概况</a> </h2>
+            <div class="boxTitle relative" id="advancedTitle">
+
+
+  <ul class="titleNav">
+        <li class="bold">账户：{{hc_name}}</li>
+
+    </ul>
+</div>
+        <table class="maxWidth" id="trades" style="" cellspacing="0">
+    <tbody><tr>
+    <td valign="top">
+        <table class="advanced border0L" cellspacing="0">
+            <tbody><tr class="bg1">
+                <td>交易(笔):</td>
+                <td class="alignR">{{huizong.zl}}</td>
+            </tr>
+            <tr>
+                <td>盈利的:</td>
+                <td class="pointer" align="right">
+                            <span id="wonTip" class="在42笔交易中，正确21笔，获胜率为50<br/>在42笔交易中发生亏损21笔，亏损比例为50"><div class="blockHolder">
+                                <div class="greenBlock floatLeft" style="width:{{huizong.shenglv}}px;"></div>
+                                <div class="redBlock floatLeft" style="width:{{ huizong.kuilv }}px;"></div>
+                            </div></span>
+                </td>
+            </tr>
+
+            <tr class="bg1">
+                <td>总盈亏:</td>
+                <td class="alignR">{{huizong.yk|floatformat:"2"}}</td>
+            </tr>
+
+            <tr>
+                <td>总/平均获利:</td>
+                <td class="alignR">{{ hc.alllr|floatformat:2 }} / ￥{{ hc.avglr|floatformat:2 }}</td>
+            </tr>
+            <tr class="bg1">
+                <td>总/平均损失:</td>
+                <td class="alignR">{{ hc.allss|floatformat:2 }} / -￥{{ hc.avgss|floatformat:2 }}</td>
+            </tr>
+            <tr>
+
+                <td>盈亏比:</td>
+                <td class="alignR">{{ huizong.ykratio }}<!--{% widthratio hc.avglr hc.avgss -1.0 %}--></td>
+            </tr>
+            <tr class="bg1">
+                <td>总胜率:</td>
+                <td class="alignR">{{huizong.shenglv}} %</td>
+            </tr>
+
+
+                                        </tbody></table>
+            </td>
+            <td valign="top">
+                <table class="advanced border0R border0L" cellspacing="0">
+                    <tbody><tr>
+                        <td>成功的做多交易:</td>
+                        <td align="right">
+                            <span class="gray">({{hc.cgzd.0}}/{{hc.cgzd.1}}) </span> {{hc.cgzd.2}}%
+                            </td>
+                    </tr>
+                    <tr class="bg1">
+                        <td>成功的做空交易:</td>
+                        <td align="right">
+                            <span class="gray">({{hc.cgzk.0}}/{{hc.cgzk.1}}) </span> {{hc.cgzk.2}}%
+                            </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>最佳交易(￥):</td>
+                        <td class="alignR">                             <span class="gray">({{huizong.most.0}})</span> {{huizong.most.1|floatformat}}
+                        </td>
+                    </tr>
+                    <tr class="bg1">
+                        <td> 最差交易(￥):</td>
+                        <td class="alignR">                            <span class="gray">({{huizong.least.0}})</span> {{huizong.least.1|floatformat}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>最好的交易（点数）</td>
+                        <td class="alignR">                            <span class="gray">({{huizong.most2.0}})</span> {{huizong.most2.1|floatformat}}
+                        </td>
+                    </tr>
+                    <tr class="bg1">
+                        <td>最坏的交易（点数）</td>
+                        <td class="alignR">                            <span class="gray">({{huizong.least2.0}})</span> {{huizong.least2.1|floatformat}}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>平均持仓时间:</td>
+                        <td class="alignR">{{hc.ccsj}}</td>
+                    </tr>
+
+                                        </tbody></table>
+            </td>
+            <td>
+                <table class="advanced border0R" cellspacing="0">
+                    <tbody><tr class="bg1">
+                        <td><span class="dotted" id="pfTip">利润因子:</span></td>
+                        <td class="alignR">{{hc.lryz}}</td>
+                    </tr>
+                    <tr>
+                        <td><span class="dotted" id="sdTip">标准差:</span></td>
+                        <td class="alignR">￥{{hc.std}}</td>
+                    </tr><tr class="bg1">
+                                                                <td><span class="dotted" id="sharpTip">最低余额:</span></td>
+                                                 <td class="alignR">
+                                                     ￥{{huizong.min_amount}}
+                                                 </td>
+                                            </tr>
+
+
+                    <tr>
+                        <td><span class="dotted" id="zTip">最高余额:</span></td>
+                        <td class="alignR">
+                            ￥{{huizong.max_amount}}
+                        </td>
+                    </tr>
+
+                    <tr class="bg1">
+                        <td><span class="dotted" id="expTip">存/取款:</span></td>
+                        <td class="alignR">￥{{huizong.deposit}} / {{huizong.draw}}</td>
+                    </tr>
+                                                            <tr>
+                                                                <td><span class="dotted" id="ahprTip">最大回测:</span></td>
+                                                <td class="alignR">{{ huizong.max_zjhc }}%</td>
+                                            </tr>
+                     <tr class="bg1">
+                                                                <td><span class="dotted" id="ghprTip">回报率:</span></td>
+                                                <td class="alignR">{{ huizong.huibaolv|floatformat:2 }}</td>
+                                            </tr>
+
+                                        </tbody></table>
+            </td>
+        </tr>
+
+    </tbody></table>
+
+            </div><br/>
+            <div id="tuxiantp2" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp3" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp4" style="width:1200px;height:600px;"></div><br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <div id="tuxiantp5" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp6" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp7" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp8" style="width:1200px;height:600px;"></div><br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <div id="tuxiantp9" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp10" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp11" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp12" style="width:1200px;height:600px;"></div><br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <div id="tuxiantp13" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp14" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp15" style="width:1200px;height:600px;"></div><br/>
+            <div id="tuxiantp16" style="width:1200px;height:600px;"></div><br/>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <div id="tuxiantp17" style="width:1200px;height:600px;"></div>
+        </div>
+        <div style="position:relative;top:10px;" class="huatut">
+            <table style="width:100%;text-align:center;">
+                <tr style="cursor:pointer;">
+                    <td class="tuxiant" id="tuxiant1">交易概况</td>
+                    <td class="tuxiant" id="tuxiant2">累积净值</td>
+                    <td class="tuxiant" id="tuxiant3">累积盈亏</td>
+                    <td class="tuxiant" id="tuxiant4">每日权益</td>
+                    <td class="tuxiant" id="tuxiant5">成交偏好</td>
+                    <td class="tuxiant" id="tuxiant6">品种盈亏</td>
+                    <!--<td id="tuxiant11">每日盈亏</td>-->
+                    <td class="tuxiant" id="tuxiant7">每周盈亏</td>
+                    <td class="tuxiant" id="tuxiant8">每月盈亏</td>
+                    <td class="tuxiant" id="tuxiant9">账号余额</td>
+                    <td class="tuxiant" id="tuxiant10">累积入金</td>
+                    <td class="tuxiant" id="tuxiant11">持仓时间</td>
+                    <td class="tuxiant" id="tuxiant12">平仓分布</td>
+                    <td class="tuxiant" id="tuxiant13">多空盈亏</td>
+                    <td class="tuxiant" id="tuxiant14">日内隔夜</td>
+                    <td class="tuxiant" id="tuxiant15">资金回测</td>
+                    <td class="tuxiant" id="tuxiant16">持仓分布</td>
+                    <td class="tuxiant" id="tuxiant17">盈亏分布</td>
+                    <td id="tuxiant18"></td>
+                    <td id="tuxiant19"></td>
+                    <td id="tuxiant20"></td>
+                    <td id="tuxiant21"></td>
+                    <td id="tuxiant22"></td>
+                    <td id="tuxiant23"></td>
+                    <td id="tuxiant24">导出为PDF</td>
+                    <td id="tuxiant25">播放</td>
+                </tr>
+            </table>
+        </div><br/>
+        <div id="zhexiantut" style="width:auto;height:600px;"></div><br/><br/><br/><br/>
+
+{% endif %}
+ <script type="text/javascript">
+ var tu_name;
+
+// 实现随机生成十六进制颜色值
+function getColor(){
+  //定义字符串变量colorValue存放可以构成十六进制颜色值的值
+  var colorValue="0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F";
+  //以","为分隔符，将colorValue字符串分割为字符数组["0","1",...,"f"]
+  var colorArray = colorValue.split(",");
+   var color="#";//定义一个存放十六进制颜色值的字符串变量，先将#存放进去
+    //使用for循环语句生成剩余的六位十六进制值
+   for(var i=0;i<6;i++){
+        //colorArray[Math.floor(Math.random()*16)]随机取出
+       // 由16个元素组成的colorArray的某一个值，然后将其加在color中，
+       //字符串相加后，得出的仍是字符串
+        color+=colorArray[Math.floor(Math.random()*16)];
+   }
+   return color;
+}
+//var show_id = 'zhexiantut';
+function huatut(show_id,type,zx_x,zx_y,zx_y2,zx_y3){
+var myChart = echarts.init(document.getElementById(show_id));
+
+if(type=='line'){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+optiont = {
+backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+title:{
+    text:"账户：{{hct.host}}",
+    subtext: tu_name,
+    textStyle:{
+        color:'#00A600',
+        fontSize:18
+    }
+},
+color:["#FF0000"],
+tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: zx_x
+        },
+toolbox: {
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+    xAxis: {
+        type: 'category',
+        data: zx_x
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        name: tu_name[0],
+        type: 'line',
+        smooth: true,
+        showAllSymbol: true,
+        symbol: 'emptyCircle',
+        symbolSize: 1,
+        itemStyle: {
+            normal: {
+                color: '#ff6a4a',
+                lineStyle: { color: '#ff6a4a' }
+            }
+        },
+        data: zx_y
+    },{
+        name: tu_name[1],
+        type: 'line',
+        smooth: true,
+        showAllSymbol: true,
+        symbol: 'emptyCircle',
+        symbolSize: 1,
+        itemStyle: {
+            normal: {
+                color: '#61b7ec', // rgb(97,183,236)
+                lineStyle: { color: '#61b7ec' }
+            }
+        },
+        data: zx_y2
+    }]
+};
+}else if(type=='pie'){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+    optiont = {
+    backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+    title:{
+    text:"账户：{{hct.host}}",
+    subtext: tu_name,
+    textStyle:{
+        color:'#00A600',
+        fontSize:18
+        }
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient : 'horizontal', //'vertical',
+        //x : '80%',
+        y : '80%',
+        data:zx_x
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {
+                show: true,
+                type: ['pie', 'funnel'],
+                option: {
+                    funnel: {
+                        x: '25%',
+                        width: '50%',
+                        funnelAlign: 'left',
+                        max: 1548
+                    }
+                }
+            },
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    series : [
+        {
+            name:tu_name[0]+"(成交额)",
+            type:'pie',
+            radius : '40%',
+            center: ['50%', '50%'],
+            data:zx_y
+        }
+    ]
+};
+}else if(type=='pie2'){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+optiont = {
+    backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+    title:{
+        text:"账户：{{hct.host}}",
+        subtext: tu_name,
+        textStyle:{
+            color:'#00A600',
+        fontSize:18
+        }
+    },
+
+   legend: {
+       x : 'center',
+       data:['做多盈利','做空盈利','做多亏损','做空亏损']
+       //color: ['#339CD1','#FE8463','#9BCA63','#FAD860'],
+   },
+   tooltip : {
+       show: true,
+       formatter: "{a} <br/>{b} : {c} ({d}%)"
+   },
+   toolbox: {
+       show : true,
+       feature : {
+           mark : {show: true},
+           dataView : {show: true, readOnly: true},
+           restore : {show: true},
+           saveAsImage : {show: true}
+       }
+   },
+   calculable:true,
+   series : [
+       {
+           type:'pie',
+           name: tu_name[0],
+           center: ['25%', '50%'],
+           radius : '50%',
+           data: zx_y,
+           itemStyle: {//系列级个性化
+               normal: {
+                   color: function(params) {
+                       var colorList = [
+                         '#339CD1','#FE8463','#9BCA63','#C96890' // FAD860
+                       ];
+                       return colorList[params.dataIndex]
+                   },
+                   labelLine:{//饼图显示线条
+                       length:2,
+                       show:true
+                   },
+                   /*label:{//饼图不显示文字
+                       show:true,
+                       position : 'inner',//饼图图上显示百分比
+                       formatter : function (params) {
+                         return (params.percent - 0).toFixed(0) + '%'
+                       },
+                       textStyle:{
+                           fontSize:14
+                       }
+                   },*/
+               }
+           }
+       },
+       {
+           type:'pie',
+           name:tu_name[1],
+           center: ['70%', '50%'],
+           radius : '40%',
+           data: zx_y2,
+           itemStyle: {//系列级个性化
+               normal: {
+                   color: function(params) {
+                       var colorList = [
+                         '#339CD1','#FE8463','#9BCA63','#C96890'
+                       ];
+                       return colorList[params.dataIndex]
+                   },
+                   labelLine:{//饼图显示线条
+                       length:2,
+                       show:true
+                   }
+               }
+           }
+       }
+   ]
+};
+}else if(type=='bar'){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+var colorList = [
+                  '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
+                   '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
+                   '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+                ];
+if(colorList.length<zx_x.length){
+    var wh = 0;
+    var _sizes = zx_x.length-colorList.length;
+    while(wh<_sizes){
+        var col = getColor();
+        if(colorList.indexOf(col)<0 && col!="#FFFFFF"){
+            colorList.push(col);
+            wh ++;
+        }
+    }
+}
+optiont ={
+    //backgroundColor:'#fdfdfd', // 背景颜色
+    backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+    title:{
+    text:"账户：{{hct.host}}",
+    subtext: tu_name,
+    textStyle:{
+        color:'#00A600',
+        fontSize:18
+        }
+    },
+    tooltip: {},
+    toolbox: {
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+    xAxis: {
+        type: 'category',
+        data: zx_x,
+
+    },
+    yAxis: {
+        type: 'value',
+    },
+    /*series: [{
+        name: '名称',
+        type: 'bar',
+        data: zx_y
+    }],*/
+    series: [
+        {
+            name: tu_name[0],
+            type: 'bar',
+            barMaxWidth: 40, // 柱子的最大宽度
+            barCateGoryGap: 20,
+            itemStyle: {
+                normal: {
+                    color: function(params) {
+                        // build a color map as your need.
+                        return colorList[params.dataIndex]
+                    },
+                    /*label: {
+                        show: true,
+                        position: 'top',//'inside',//
+                        formatter: '{b}\n{c}'
+                    }*/
+                }
+            },
+            data: zx_y,
+            /*markPoint: {
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(0,0,0,0)',
+                    formatter: function(params){
+                        return '<img src="'
+                                + params.data.symbol.replace('image://', '')
+                                + '"/>';
+                    }
+                },
+
+            }*/
+        }
+    ],
+    label:{
+        normal:{
+            show:true, // 柱子上取消显示数值
+            position:'top'
+        }
+    }
+};
+}else if(type=='bar2'){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+var colorList = [
+                  '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
+                   '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
+                   '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+                ];
+if(colorList.length<zx_x.length){
+    var wh = 0;
+    var _sizes = zx_x.length-colorList.length;
+    while(wh<_sizes){
+        var col = getColor();
+        if(colorList.indexOf(col)<0 && col!="#FFFFFF"){
+            colorList.push(col);
+            wh ++;
+        }
+    }
+}
+optiont ={
+    //backgroundColor:'#fdfdfd', // 背景颜色
+    backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+    title:{
+        text:"账户：{{hct.host}}",
+        subtext: tu_name,
+        textStyle:{
+            color:'#00A600',
+            fontSize:18
+        }
+    },
+    tooltip: {},
+    toolbox: {
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+    xAxis: {
+        type: 'category',
+        data: zx_x,
+
+    },
+    yAxis: {
+        type: 'value',
+    },
+    /*series: [{
+        name: '名称',
+        type: 'bar',
+        data: zx_y
+    }],*/
+    series: [
+        {
+            name: tu_name[0],
+            type: 'bar',
+            barMaxWidth: 80, // 柱子的最大宽度
+            barCategoryGap: 0,
+            itemStyle: {
+                normal: {
+                    color: function(params) {
+                        // build a color map as your need.
+                        return colorList[params.dataIndex]
+                    },
+                    /*label: {
+                        show: true,
+                        position: 'top',//'inside',//
+                        formatter: '{b}\n{c}'
+                    }*/
+                }
+            },
+            data: zx_y,
+            /*markPoint: {
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(0,0,0,0)',
+                    formatter: function(params){
+                        return '<img src="'
+                                + params.data.symbol.replace('image://', '')
+                                + '"/>';
+                    }
+                },
+
+            }*/
+        }
+    ],
+    label:{
+        normal:{
+            show:false, // 柱子上取消显示数值
+            position:'top'
+        }
+    }
+};
+}else if(type=='bar3'){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+
+optiont = {
+    backgroundColor: '#eee',
+    title:{
+        text:"账户：{{hct.host}}",
+        subtext: tu_name,
+        textStyle:{
+            color:'#00A600',
+            fontSize:18
+        }
+    },
+    legend: {
+        data: ['盈利', '亏损']
+    },
+    brush: {
+        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+        xAxisIndex: 0
+    },
+    toolbox: {
+        show : true,
+        feature: {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : { show: true, type: [ 'stack', 'tiled', 'line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    tooltip: {},
+    xAxis: {
+        data: zx_x,
+        name: '持仓时间（小时）',
+        silent: false,
+        axisLine: {onZero: true},
+        splitLine: {show: false},
+        splitArea: {show: false}
+    },
+    yAxis: {
+        inverse: false,
+        splitArea: {show: false}
+    },
+    grid: {
+        left: 100
+    },
+    visualMap: {
+        type: 'continuous',
+        dimension: 1,
+        text: ['盈利', '亏损'],
+        subtext: tu_name,
+        inverse: false,
+        itemHeight: 200,
+        calculable: true,
+        min: -2,
+        max: 6,
+        top: 60,
+        left: 10,
+        inRange: {
+            colorLightness: [0.4, 0.8]
+        },
+        outOfRange: {
+            color: '#090'
+        },
+        controller: {
+            inRange: {
+                color: ['#26712d','#d7504b']
+            }
+        }
+    },
+    series: [
+        {
+            name: '盈利',
+            type: 'bar',
+            stack: 'one',
+            itemStyle: {
+                normal: {
+                    color: '#d7504b'
+                },
+                emphasis: {
+                    barBorderWidth: 1,
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                    shadowColor: 'rgba(0,0,0,0.5)'
+                }
+            },
+            data: zx_y
+        },
+        {
+            name: '亏损',
+            type: 'bar',
+            stack: 'one',
+            itemStyle: {
+                normal: {
+                    color: '#26712d'
+                },
+                emphasis: {
+                    barBorderWidth: 1,
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                    shadowColor: 'rgba(0,0,0,0.5)'
+                }
+            },
+            data: zx_y2
+        }
+    ]
+};
+
+}else if(type=='linebar'){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+optiont = {
+backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+title:{
+    text:"账户：{{hct.host}}",
+    subtext: tu_name,
+    textStyle:{
+        color:'#00A600',
+        fontSize:18
+    }
+},
+color:["#FF0000"],
+tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: zx_x
+        },
+toolbox: {
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+    xAxis: {
+        type: 'category',
+        data: zx_x
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        name: tu_name[0],
+        type: 'line',
+        smooth: true,
+        showAllSymbol: true,
+        symbol: 'emptyCircle',
+        symbolSize: 1,
+        itemStyle: {
+            normal: {
+                color: '#ff6a4a',
+                lineStyle: { color: '#ff6a4a' }
+            }
+        },
+        data: zx_y
+    },{
+        name: tu_name[1],
+        type: 'bar',
+        barMaxWidth: 10, // 柱子的最大宽度
+        // barCateGoryGap: 20,
+        itemStyle: {
+            normal: {
+                color: function(params) {
+                    // build a color map as your need.
+                    if(params.value>0){
+                        return 'red';
+                    }else{
+                        return 'green';
+                    }
+                }
+            }
+        },
+        data: zx_y2
+    }]
+};
+}else if(type=='line2'){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+var linebars = new Array();
+var linebar2 = [];
+zx_y2.forEach(function(i,k){
+    if(i<0){
+        linebars[zx_x[k]]=i;
+        linebar2.push(-i);
+    }else{
+        linebars[zx_x[k]]=i;
+        linebar2.push(i);
+    }
+});
+optiont = {
+backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+title:{
+    text:"账户：{{hct.host}}",
+    subtext: tu_name,
+    textStyle:{
+        color:'#00A600',
+        fontSize:18
+    }
+},
+color:["#FF0000"],
+tooltip: {
+            trigger: 'axis',
+            formatter: function(params, ticket, callback) {
+            var showContent = params[0].name+"<br>";//params.seriesName + "：" + params.value;
+            for(var i=0,l=params.length;i<l;i++){
+                if(i==1){
+                    showContent += "<span style='color:"+params[i].color+";'>"+params[i].seriesName+"</span>："+linebars[params[i].name]+"<br>";
+                }else{
+                    showContent += "<span style='color:"+params[i].color+";'>"+params[i].seriesName+"</span>："+params[i].value+"<br>";
+                }
+                //<span style="color:'+params[i].color+';">'+params[i].seriesName + '</span>
+            }
+            return showContent;
+            }
+        },
+        legend: {
+            data: tu_name
+        },
+toolbox: {
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+    xAxis: {
+        type: 'category',
+        data: zx_x
+    },
+    yAxis: [{
+        type: 'value',
+        axisLine: {
+            lineStyle: {
+                color: 'purple'
+            }
+        }
+    },{
+        type: 'value',
+        axisLine: {
+            lineStyle: {
+                color: 'red'
+            }
+        }
+    }],
+    series: [{
+        name: tu_name[0],
+        type: 'line',
+        yAxisIndex:0,
+        smooth: true,
+        showAllSymbol: true,
+        symbol: 'emptyCircle',
+        symbolSize: 1,
+        itemStyle: {
+            normal: {
+                color: 'purple', //#ff6a4a
+                lineStyle: { color: 'purple' }
+            }
+        },
+        data: zx_y
+    },{
+        name: tu_name[1],
+        type: 'bar',
+        yAxisIndex:1,
+        barMaxWidth: 10, // 柱子的最大宽度
+        // barCateGoryGap: 20,
+        itemStyle: {
+            normal: {
+                color: function(params) {
+                    // build a color map as your need.
+                    if(linebars[params.name]>0){
+                        return 'red';
+                    }else{
+                        return 'green';
+                    }
+                }
+            }
+        },
+        data: linebar2 //zx_y2
+    },{
+        name: tu_name[2],
+        type: 'line',
+        yAxisIndex:0,
+        smooth: true,
+        showAllSymbol: true,
+        symbol: 'emptyCircle',
+        symbolSize: 1,
+        itemStyle: {
+            normal: {
+                color: '#36969f', //#ff6a4a
+                lineStyle: { color: '#36969f' }
+            }
+        },
+        data: zx_y3
+    }]
+};
+}else if(type=='scatter'){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+optiont = {
+        backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+    title : {
+        text: "账户：{{hct.host}}",
+        subtext: tu_name,
+        textStyle:{
+            color:'#00A600',
+            fontSize:18
+        },
+        subtext: 'X轴为持仓小时，Y轴为持仓时间、盈亏、手数'
+    },
+    tooltip : {
+        trigger: 'axis',
+        /*showDelay : 0,
+        formatter : function (params) {
+            if (params.value.length > 1) {
+                return params.seriesName + ' :<br/>'
+                   + params.value[0] + 'cm '
+                   + params.value[1] + '';
+            }
+            else {
+                return params.seriesName + ' :<br/>'
+                   + params.name + ' : '
+                   + params.value + '';
+            }
+        },*/
+        axisPointer:{
+            show: true,
+            type : 'cross',
+            lineStyle: {
+                type : 'dashed',
+                width : 1
+            }
+        }
+    },
+    legend: {
+        data:['盈利','亏损']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataZoom : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    dataZoom: {
+        type: 'inside',//'inside',
+        show: true,
+        start : 0,
+        end : 100
+    },
+    xAxis : [
+        {
+            type : 'value',
+            name: '持仓时间(小时)',
+            nameLocation:'middle',
+            scale:true,
+            axisLabel : {
+                formatter: '{value} H'
+            }
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            //name: '盈亏',
+            scale:true,
+            axisLabel : {
+                formatter: '￥{value}'
+            }
+        }
+    ],
+    series : [
+        {
+            name:'盈利',
+            type:'scatter',
+            data: zx_y,
+            symbolSize: function (data) {
+                return 5+data[2]*2; // Math.sqrt(data[1]) / 5e2;
+            },
+            label: {
+                emphasis: {
+                    show: true,
+                    formatter: function (param) {
+                        return param.data;
+                    },
+                    position: 'top'
+                }
+            },
+            itemStyle: {
+                normal: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(120, 36, 50, 0.5)',
+                    shadowOffsetY: 5,
+                    color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
+                        offset: 0,
+                        color: 'rgb(251, 118, 123)'
+                    }, {
+                        offset: 1,
+                        color: 'rgb(204, 46, 72)'
+                    }])
+                }
+            },
+            markPoint : {
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+            markLine : {
+                data : [
+                    {type : 'average', name: '平均值'}
+                ]
+            }
+        },
+        {
+            name:'亏损',
+            type:'scatter',
+            data: zx_y2,
+            symbolSize: function (data) {
+                return 5+data[2]*2; // Math.sqrt(data[1]) / 5e2;
+            },
+            label: {
+                emphasis: {
+                    show: true,
+                    formatter: function (param) {
+                        return param.data;
+                    },
+                    position: 'top'
+                }
+            },
+            itemStyle: {
+                normal: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(25, 100, 150, 0.5)',
+                    shadowOffsetY: 5,
+                    color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
+                        offset: 0,
+                        color: 'rgb(129, 227, 238)'
+                    }, {
+                        offset: 1,
+                        color: 'rgb(25, 183, 207)'
+                    }])
+                }
+            },
+            markPoint : {
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+            markLine : {
+                data : [
+                    {type : 'average', name: '平均值'}
+                ]
+            }
+        }
+    ]
+};
+}else if(type=="scatter_date"){
+    if(show_id=='zhexiantut'){
+        myChart.clear();
+    }
+var all_pcsjs = [];
+zx_x.forEach(function(v,k){
+    all_pcsjs.push(
+         {
+            name:v,
+            type:'scatter',
+            symbolSize: function (value){
+                return 10+value[2];
+            },
+            data: zx_y[v]
+        }
+    )
+});
+optiont = {
+    backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+    title : {
+        text : "账户：{{hct.host}}",
+        textStyle:{
+            color:'#00A600',
+            fontSize:18
+        },
+        subtext : '平仓分布'
+    },
+    tooltip : {
+        trigger: 'axis',
+        axisPointer:{
+            show: true,
+            type : 'cross',
+            lineStyle: {
+                type : 'dashed',
+                width : 1
+            }
+        }
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    dataZoom: {
+        type: 'inside',//'slider',
+        show: true,
+        start : 20,
+        end : 100
+    },
+    legend: {
+        data:zx_x
+    },
+    xAxis : [
+        {
+            type : 'time',
+            splitNumber: 20
+            //scale: true
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            splitNumber: 4,
+            scale: true
+        }
+    ],
+    series : all_pcsjs
+};
+/*
+optiont = {
+    backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+    title : {
+        text : "账户：{{hct.host}}",
+        textStyle:{
+            color:'#00A600',
+            fontSize:18
+        },
+        subtext : '平仓分布'
+    },
+    tooltip : {
+        trigger: 'axis',
+        axisPointer:{
+            show: true,
+            type : 'cross',
+            lineStyle: {
+                type : 'dashed',
+                width : 1
+            }
+        }
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    dataZoom: {
+        type: 'slider',//'inside',
+        show: true,
+        start : 40,
+        end : 96
+    },
+    legend : {
+        data : ['平仓分布']
+    },
+    dataRange: {
+        min: 0,
+        max: {{ hct.all_pcsj_max }},
+        orient: 'horizontal',
+        y: 30,
+        x: 'center',
+        //text:['高','低'],           // 文本，默认为数值文本
+        color:['lightgreen','orange'],
+        splitNumber: 5
+    },
+    grid: {
+        y2: 80
+    },
+    xAxis : [
+        {
+            type : 'time',
+            name: '日期',
+            splitNumber:20
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            name: '盈亏，手数'
+        }
+    ],
+    animation: false,
+    series : [
+        {
+            name:'平仓分布',
+            type:'scatter',
+            tooltip : {
+                trigger: 'axis',
+                formatter : function (params) {
+                    var date = new Date(params.value[0]);
+                    return params.seriesName
+                           + ' （'
+                           + date.getFullYear() + '-'
+                           + (date.getMonth() + 1) + '-'
+                           + date.getDate() + ' '
+                           + date.getHours() + ':'
+                           + date.getMinutes()
+                           +  '）<br/>'
+                           + params.value[1] + ', '
+                           + params.value[2];
+                },
+                axisPointer:{
+                    type : 'cross',
+                    lineStyle: {
+                        type : 'dashed',
+                        width : 1
+                    }
+                }
+            },
+            symbolSize: function (value){
+                return Math.round(value[2]*3);
+            },
+            data: zx_y
+        }
+    ]
+};*/
+}
+
+myChart.setOption(optiont);
+window.onresize = myChart.resize;
+
+//alert(myChart.getDataURL());
+}
+
+function tuxiancolort(id){
+    var id2 = "";
+    var is_display = true;
+    var show_id = "zhexiantut";
+    if(id.indexOf("tuxiantp")>=0){
+        show_id = id;
+        id=id.slice(0,7)+id.slice(8,id.length);
+    }
+    for(var i=1;i<=25;i++){
+        id2 = "tuxiant"+i;
+        if(id=="tuxiant1" && is_display){
+            $("#leftColumn").css("display","block");
+            $("#zhexiantut").css("display","none");
+            //var winWidth=1140;
+            //获取窗口宽度、高度
+            // if (document.documentElement  && document.documentElement.clientHeight && document.documentElement.clientWidth){
+            //    winWidth  = document.documentElement.clientWidth;
+            //    winHeight = document.documentElement.clientHeight;
+            //}
+            //var bl = (winWidth-875)/2/winWidth*100;
+            //$("#leftColumn").css("left",bl+'%');
+            is_display = false;
+        }else{
+            $("#leftColumn").css("display","none");
+            $("#zhexiantut").css("display","block");
+            is_display = false;
+        }
+        if(id2==id){
+            $("#tuxiant"+i).css({"background-color":"#ff6a4a","width":"40px","color":"#f5f5f5","fontSize":"14px"});
+        }else{
+            $("#tuxiant"+i).css({"background-color":"#2b2b2b","width":"40px","color":"#f5f5f5","fontSize":"12px"});
+        }
+    }
+    if(id=='tuxiant1'){
+        $("#zhexiantut").css("display","none");
+        $("#leftColumn").css("display","block");
+    }else if(id=='tuxiant2'){
+        tu_name=["累积净值","",""];
+        huatut(show_id,"line",{{zx_x|safe}},{{hct.alljz|safe}},"","");
+    }else if(id=='tuxiant3'){
+        tu_name=["累积利润","每日盈亏","累积手续费"];
+        huatut(show_id,"line2",{{zx_x|safe}},{{hct.allyk|safe}},{{hct.day_value|safe}},{{hct.allsxf|safe}});
+    }else if(id=='tuxiant4'){
+        tu_name=["每日权益","每日盈亏",""];
+        huatut(show_id,"line2",{{zx_x|safe}},{{hct.qy|safe}},{{hct.day_value|safe}},"");
+    }else if(id=='tuxiant5'){
+        tu_name=["成交偏好","",""];
+        huatut(show_id,"pie",{{hct.pie_name|safe}},{{hct.pie_value|safe}},"","");
+    }else if(id=='tuxiant6'){
+        tu_name=["品种盈亏","",""];
+        huatut(show_id,"bar",{{hct.bar_name|safe}},{{hct.bar_value|safe}},"","");
+    }else if(id=='tuxiant7'){
+        tu_name=["每周盈亏","",""];
+        huatut(show_id,"bar",{{hct.week_name|safe}},{{hct.week_value|safe}},"","");
+    }else if(id=='tuxiant8'){
+        tu_name=["每月盈亏","",""];
+        huatut(show_id,"bar",{{hct.month_name|safe}},{{hct.month_value|safe}},"","");
+    }else if(id=='tuxiant9'){
+        tu_name=["账号余额","累积入金",""];
+        huatut(show_id,"line",{{zx_x|safe}},{{hct.amount|safe}},{{hct.alleae|safe}},"");
+    }else if(id=='tuxiant10'){
+        tu_name=["累积入金","入金",""];
+        huatut(show_id,"linebar",{{zx_x|safe}},{{hct.alleae|safe}},{{hct.eae|safe}},"");
+    }else if(id=='tuxiant11'){
+        tu_name=["","",""];
+        huatut(show_id,"scatter","",{{hct.all_ccsjy|safe}},{{hct.all_ccsjk|safe}},"");
+    }else if(id=='tuxiant12'){
+        tu_name=["","",""];
+        huatut(show_id,"scatter_date",{{ hct.all_pcsjn|safe }},{{hct.all_pcsjs|safe}},"","");
+    }else if(id=='tuxiant13'){
+        tu_name=["多空盈亏","多空胜率",""];
+        huatut(show_id,"pie2","",{{hct.all_ylje|safe}},{{hct.all_ylss|safe}},"");
+    }else if(id=='tuxiant14'){
+        tu_name=["日内隔夜","日内隔夜",""];
+        huatut(show_id,"pie2","",{{hct.all_rnje|safe}},{{hct.all_rnss|safe}},"");
+    }else if(id=='tuxiant15'){
+        tu_name=["","资金回测",""];
+        huatut(show_id,"line2",{{zx_x|safe}},"",{{hct.zjhc|safe}},"");
+    }else if(id=='tuxiant16'){
+        tu_name=["持仓时间（小时）","盈亏",""];
+        huatut(show_id,"bar3",{{hct.all_ccsjylks|safe}},{{hct.all_ccsjyl2|safe}},{{hct.all_ccsjks2|safe}},"");
+    }else if(id=='tuxiant17'){
+        tu_name=["盈亏","手数",""];
+        huatut(show_id,"bar2",{{hct.ykss_x|safe}},{{hct.ykss_y|safe}},"","");
+    }
+}
+
+var tuxiant_id = "tuxiant1";
+var inters = 2;
+
+$(".tuxiant").hover(function(){
+    $(this).css({"background-color":"#ff6a4a","width":"40px","color":"#f5f5f5","fontSize":"14px"});
+ },function(){
+    if(tuxiant_id!=$(this).attr('id')){
+        $(this).css({"background-color":"#2b2b2b","width":"40px","color":"#f5f5f5","fontSize":"12px"});
+    }else{
+        var _a = $(this).attr('id');
+        inters = parseInt(_a.slice(7));
+    }
+ });
+
+$(".tuxiant").click(function(){
+    tuxiant_id = $(this).attr('id');
+    tuxiancolort(tuxiant_id);
+});
+
+tuxiancolort("tuxiant1");
+
+function request(type){
+    var start_date = $("#start_date").val();
+    var end_date = $("#end_date").val();
+    if(type=='ys'){
+        url = "{% url 'gxjy' %}"+"?start_date="+start_date+"&end_date="+end_date;
+    }else if(type=='js'){
+        url = "{% url 'gxjy' %}?type=js"+"&start_date="+start_date+"&end_date="+end_date;
+    }else if(type=='tu'){
+        url = "{% url 'gxjy' %}?type=tjt"+"&start_date="+start_date+"&end_date="+end_date;
+    }
+    location.href = url;
+}
+var setintervals = null;
+$("#tuxiant25").click(function(){
+    if(setintervals==null){
+        $(this).html('停止');
+        tuxiancolort("tuxiant"+inters);
+        setintervals = setInterval(function(){
+            inters = inters<17?inters+1:2;
+            tuxiancolort("tuxiant"+inters);
+        },2000);
+    }else{
+        clearInterval(setintervals);
+        $(this).html('播放');
+        setintervals = null;
+    }
+
+});
+
+
+/*
+var downPdf = document.getElementById("tuxiant24");
+downPdf.onclick = function () {
+    var export_content = document.getElementById("export_content");
+    $(".tuxiantp").css("display","block");
+    for(var i=1;i<18;i++){
+        show_id = 'tuxiantp'+i;
+        tuxiancolort("tuxiant"+i);
+    }
+    $("#leftColumn").css("display","block");
+    $(".huatut").css("display","none");
+    html2canvas(
+            export_content,
+            {
+                dpi: 172,//导出pdf清晰度
+                onrendered: function (canvas) {
+                    var contentWidth = canvas.width;
+                    var contentHeight = canvas.height;
+
+                    //一页pdf显示html页面生成的canvas高度;
+                    var pageHeight = contentWidth / 592.28 * 841.89;
+                    //未生成pdf的html页面高度
+                    var leftHeight = contentHeight;
+                    //pdf页面偏移
+                    var position = 0;
+                    //html页面生成的canvas在pdf中图片的宽高（a4纸的尺寸[595.28,841.89]）
+                    var imgWidth = 595.28;
+                    var imgHeight = 592.28 / contentWidth * contentHeight;
+
+                    var pageData = canvas.toDataURL('image/jpeg', 1.0);
+                    var pdf = new jsPDF('', 'pt', 'a4');
+
+                    //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+                    //当内容未超过pdf一页显示的范围，无需分页
+                    if (leftHeight < pageHeight) {
+                        pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                    } else {
+                        while (leftHeight > 0) {
+                            pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+                            leftHeight -= pageHeight;
+                            position -= 841.89;
+                            //避免添加空白页
+                            if (leftHeight > 0) {
+                                pdf.addPage();
+                            }
+                        }
+                    }
+                    pdf.save('content.pdf');
+                },
+                //背景设为白色（默认为黑色）
+                background: "#fff"
+            });
+    $(".tuxiantp").css("display","none");
+    $(".huatut").css("display","block");
+}*/
+</script>
+
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/fx-mins.css' %}" title="default"/>
+<link rel="stylesheet" href="{% static 'css/jquery-ui-1.8.21.custom.css' %}">
+<link href="{% static 'css/cookieconsent.min.css' %}" rel="stylesheet" type="text/css" />
+<div id="leftColumn" class="relative" style="margin: auto;position: absolute;top: 200px;left: 0;right: 0;bottom: 0;width:875px;">
+
+
+<div class="floatLeft" style="width:660px;">
+
+
+</div>
+<div class="floatLeft" style="width:877px">
+
+<div class="ds1" style="width:960px;font-size:14px;">
+<div class="ds2">
+<div class="ds3">
+<div class="ds4">
+<div class="ds5">
+<div class="ds6">
+<div class="box_cont">
+<div class="boxTitle relative" id="advancedTitle">
+
+
+  <ul class="titleNav">
+        <li class="bold">账户：{{hc_name}}</li>
+
+    </ul>
+</div>
+        <table class="maxWidth" id="trades" style="" cellspacing="0">
+    <tbody><tr>
+    <td valign="top">
+        <table class="advanced border0L" cellspacing="0">
+            <tbody><tr class="bg1">
+                <td>交易(笔):</td>
+                <td class="alignR">{{huizong.zl}}</td>
+            </tr>
+            <tr>
+                <td>盈利的:</td>
+                <td class="pointer" align="right">
+                            <span id="wonTip" class="在42笔交易中，正确21笔，获胜率为50<br/>在42笔交易中发生亏损21笔，亏损比例为50"><div class="blockHolder">
+                                <div class="greenBlock floatLeft" style="width:{{huizong.shenglv}}px;"></div>
+                                <div class="redBlock floatLeft" style="width:{{ huizong.kuilv }}px;"></div>
+                            </div></span>
+                </td>
+            </tr>
+
+            <tr class="bg1">
+                <td>总盈亏:</td>
+                <td class="alignR">{{huizong.yk|floatformat:"2"}}</td>
+            </tr>
+
+            <tr>
+                <td>总/平均获利:</td>
+                <td class="alignR">{{ hc.alllr|floatformat:2 }} / ￥{{ hc.avglr|floatformat:2 }}</td>
+            </tr>
+            <tr class="bg1">
+                <td>总/平均损失:</td>
+                <td class="alignR">{{ hc.allss|floatformat:2 }} / -￥{{ hc.avgss|floatformat:2 }}</td>
+            </tr>
+            <tr>
+
+                <td>盈亏比:</td>
+                <td class="alignR">{{ huizong.ykratio }}<!--{% widthratio hc.avglr hc.avgss -1.0 %}--></td>
+            </tr>
+            <tr class="bg1">
+                <td>总胜率:</td>
+                <td class="alignR">{{huizong.shenglv}} %</td>
+            </tr>
+
+
+                                        </tbody></table>
+            </td>
+            <td valign="top">
+                <table class="advanced border0R border0L" cellspacing="0">
+                    <tbody><tr>
+                        <td>成功的做多交易:</td>
+                        <td align="right">
+                            <span class="gray">({{hc.cgzd.0}}/{{hc.cgzd.1}}) </span> {{hc.cgzd.2}}%
+                            </td>
+                    </tr>
+                    <tr class="bg1">
+                        <td>成功的做空交易:</td>
+                        <td align="right">
+                            <span class="gray">({{hc.cgzk.0}}/{{hc.cgzk.1}}) </span> {{hc.cgzk.2}}%
+                            </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>最佳交易(￥):</td>
+                        <td class="alignR">                             <span class="gray">({{huizong.most.0}})</span> {{huizong.most.1|floatformat}}
+                        </td>
+                    </tr>
+                    <tr class="bg1">
+                        <td> 最差交易(￥):</td>
+                        <td class="alignR">                            <span class="gray">({{huizong.least.0}})</span> {{huizong.least.1|floatformat}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>最好的交易（点数）</td>
+                        <td class="alignR">                            <span class="gray">({{huizong.most2.0}})</span> {{huizong.most2.1|floatformat}}
+                        </td>
+                    </tr>
+                    <tr class="bg1">
+                        <td>最坏的交易（点数）</td>
+                        <td class="alignR">                            <span class="gray">({{huizong.least2.0}})</span> {{huizong.least2.1|floatformat}}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>平均持仓时间:</td>
+                        <td class="alignR">{{hc.ccsj}}</td>
+                    </tr>
+
+                                        </tbody></table>
+            </td>
+            <td>
+                <table class="advanced border0R" cellspacing="0">
+                    <tbody><tr class="bg1">
+                        <td><span class="dotted" id="pfTip">利润因子:</span></td>
+                        <td class="alignR">{{hc.lryz}}</td>
+                    </tr>
+                    <tr>
+                        <td><span class="dotted" id="sdTip">标准差:</span></td>
+                        <td class="alignR">￥{{hc.std}}</td>
+                    </tr><tr class="bg1">
+                                                                <td><span class="dotted" id="sharpTip">最低余额:</span></td>
+                                                 <td class="alignR">
+                                                     ￥ {{huizong.min_amount}}
+                                                 </td>
+                                            </tr>
+
+
+                    <tr>
+                        <td><span class="dotted" id="zTip">最高余额:</span></td>
+                        <td class="alignR">
+                            ￥{{huizong.max_amount}}
+                        </td>
+                    </tr>
+
+                    <tr class="bg1">
+                        <td><span class="dotted" id="expTip">存/取款:</span></td>
+                        <td class="alignR">￥{{huizong.deposit}} / {{huizong.draw}}</td>
+                    </tr>
+                                                            <tr>
+                                                                <td><span class="dotted" id="ahprTip">最大回测:</span></td>
+                                                <td class="alignR">{{ huizong.max_zjhc }}%</td>
+                                            </tr>
+                     <tr class="bg1">
+                                                                <td><span class="dotted" id="ghprTip">回报率:</span></td>
+                                                <td class="alignR">{{ huizong.huibaolv|floatformat:2 }}</td>
+                                            </tr>
+
+                                        </tbody></table>
+            </td>
+        </tr>
+
+    </tbody></table>
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% if not hcd %}
+<script type="text/javascript">
+var tu_name;
+function tuxiancolor(id){
+    var id2 = "";
+    for(var i=1;i<=4;i++){
+        id2 = "#tuxian"+i;
+        if(id2==id){
+        $("#tuxian"+i).css({"background-color":"#ff6a4a","width":"40px","fontSize":"14px"});
+        }else{
+        $("#tuxian"+i).css({"background-color":"white","width":"40px","fontSize":"12px"});
+        }
+    }
+    if(id=='#tuxian1'){
+        tu_name=["增长率","手数"];
+        huatu(tu_name,{{hc.zx_x|safe}},{{hc.zzl|safe}},{{hc.vol|safe}});
+    }else if(id=='#tuxian2'){
+        tu_name=["余额","手数"];
+        huatu(tu_name,{{hc.zx_x|safe}},{{hc.dayye|safe}},{{hc.vol|safe}});
+    }else if(id=='#tuxian3'){
+        tu_name=["总利润","日利润"];
+        huatu(tu_name,{{hc.zx_x|safe}},{{hc.zx_y|safe}},{{hc.daylr|safe}});
+    }else if(id=='#tuxian4'){
+        tu_name=["","资金回测（%）"];
+        huatu(tu_name,{{hc.zx_x|safe}},null,{{hc.zjhcs|safe}});
+    }
+    <!--else if(id=='#tuxian5'){-->
+        <!--tu_name=["收盘价（{{hc.qcbs}}）","当天每单盈亏（{{hc.samedatetime}}）"];-->
+        <!--huatu(tu_name,{{hc.day_time|safe}},{{hc.day_close|safe}},{{hc.day_yk|safe}});-->
+    <!--}-->
+}
+$("#tuxian1").click(function(){
+    tuxiancolor("#tuxian1");
+});
+$("#tuxian2").click(function(){
+    tuxiancolor("#tuxian2");
+});
+$("#tuxian3").click(function(){
+    tuxiancolor("#tuxian3");
+});
+$("#tuxian4").click(function(){
+    tuxiancolor("#tuxian4");
+});
+var winWidth=1490;
+//获取窗口宽度
+ if (document.documentElement  && document.documentElement.clientHeight && document.documentElement.clientWidth){
+    winWidth  = document.documentElement.clientWidth;
+    //winHeight = document.documentElement.clientHeight;
+}
+
+if(color_getCookie("hc_ck_div")=="fd"){
+    $(".ds1").hide();
+    $("#leftColumn").css("left","0");
+    $("#huicetuall").css({"width":winWidth,"height":"710px"});
+    $("#zhexiantu").css({"width":winWidth,"height":"680px"});
+}else{
+    $(".ds1").show();
+    $("#huicetuall").css({"margin-left":"0","width":"658px","height":"348px"});
+    $("#zhexiantu").css({"width":"658px","height":"318px"});
+}
+
+$("#fangda").click(function(){
+    color_SetCookie("hc_ck_div","fd",1);
+    location.reload();
+});
+
+$("#suoxiao").click(function(){
+    color_SetCookie("hc_ck_div","sx",1);
+    location.reload();
+});
+
+tuxiancolor("#tuxian1");
+
+//var myChart = echarts.init(document.getElementById('zhexiantu'));
+
+function huatu(tu_name,category,lineData,barData){
+
+    var myChart = echarts.init(document.getElementById('zhexiantu'));
+
+// var category = {{hc.zx_x|safe}};  // X轴
+// var lineData = {{hc.zzl|safe}};   // 折线图Y轴
+// var barData = {{hc.vol|safe}};   // 柱状图Y轴
+
+var Xz = new Array();
+for(var i=0;i<category.length;i++){
+    Xz.push(0);
+}
+
+option = {
+    backgroundColor: '#0f375f',
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross' //'shadow'
+        }
+    },
+    legend: {
+        data: tu_name,
+        textStyle: {
+            color: '#ccc'
+        }
+    },
+    xAxis: {
+        data: category,
+        axisLine: {
+            lineStyle: {
+                color: '#ccc'
+            }
+        }
+    },
+    yAxis: [
+        {
+        name: tu_name[0],
+        splitLine: {show: false},
+        axisLine: {
+            lineStyle: {
+                color: 'red'
+            }
+        }
+    },
+        {
+        name: tu_name[1],
+        splitLine: {show: false},
+        axisLine: {
+            lineStyle: {
+                color: '#28dcc9'
+            }
+        }
+    }
+    ],
+    series: [{
+        type: 'line',
+        yAxisIndex: 1,
+        symbol:'none',
+        tooltip : {
+            show:false
+        },
+        itemStyle: {
+            normal: {
+                //barBorderRadius: 'none',
+                lineStyle: { color: '#ccc', width:1, type:'dotted' }
+            }
+        },
+        data: Xz
+    },{
+        name: tu_name[0],
+        type: 'line',
+        yAxisIndex: 0,
+        smooth: true,
+        showAllSymbol: true,
+        symbol: 'emptyCircle',
+        symbolSize: 8,
+        color: 'red',
+        itemStyle: {
+            normal: {
+                color: 'red',
+                lineStyle: { color: 'red' }
+            }
+        },
+        data: lineData
+    }, {
+        name: tu_name[1],
+        type: 'bar',
+        yAxisIndex: 1,
+        barWidth: 5,
+        itemStyle: {
+            normal: {
+                barBorderRadius: 3,
+                color: function(params){
+                    if(tu_name[1]!="日利润"){
+                        return '#28dcc9';
+                    }else if(params.value > 0){
+                        return 'red';
+                    }else{
+                        return '#28dcc9';
+                    }
+                }
+                /*new echarts.graphic.LinearGradient(
+                    0, 0, 0, 1,
+                    [
+                        {offset: 0, color: '#14c8d4'},
+                        {offset: 1, color: '#43eec6'}
+                    ]
+                )*/
+            }
+        },
+        data: barData
+    }]
+};
+myChart.setOption(option);
+}
+</script>
+{% else %}
+<script type="text/javascript">
+var tu_name;
+$("#tuxian1").text("盈 亏");
+$("#tuxian2").text("余 额");
+$("#tuxian3").text("利 润");
+$("#tuxian4").text("回 测");
+function tuxiancolor(id){
+    var id2 = "";
+    for(var i=1;i<=4;i++){
+        id2 = "#tuxian"+i;
+        if(id2==id){
+        $("#tuxian"+i).css({"background-color":"#ff6a4a","width":"40px","fontSize":"14px"});
+        }else{
+        $("#tuxian"+i).css({"background-color":"white","width":"40px","fontSize":"12px"});
+        }
+    }
+    if(id=='#tuxian1'){
+        tu_name=["行情（{{hcd.subtracted}}）","盈亏","持仓（0.1手）","平仓盈亏"];
+        huatu(tu_name,{{hcd.day_x|safe}},{{hcd.day_close|safe}},{{hcd.day_yk|safe}},{{hcd.vol|safe}},{{hcd.day_pcyk|safe}});
+    }else if(id=='#tuxian2'){
+        tu_name=["行情（{{hcd.subtracted}}）","利润",""];
+        huatu(tu_name,{{hcd.day_x|safe}},{{hcd.day_close|safe}},{{hcd.day_ykall|safe}},"","");
+    }else if(id=='#tuxian3'){
+        tu_name=["行情（{{hcd.subtracted}}）","","利润",""];
+        huatu(tu_name,{{hcd.day_x|safe}},{{hcd.day_close|safe}},"",{{hcd.day_pcyk|safe}},"");
+    }else if(id=='#tuxian4'){
+        tu_name=["资金回测（%）","","资金回测（%）",""];
+        huatu(tu_name,{{hcd.day_x|safe}},{{hcd.zjhcs|safe}},null,{{hcd.zjhcs|safe}},"");
+    }
+    <!--else if(id=='#tuxian5'){-->
+        <!--tu_name=["收盘价（{{hcd.qcbs}}）","当天每单盈亏（{{hcd.samedatetime}}）"];-->
+        <!--huatu(tu_name,{{hcd.day_time|safe}},{{hcd.day_close|safe}},{{hcd.day_yk|safe}});-->
+    <!--}-->
+}
+$("#tuxian1").click(function(){
+    tuxiancolor("#tuxian1");
+});
+$("#tuxian2").click(function(){
+    tuxiancolor("#tuxian2");
+});
+$("#tuxian3").click(function(){
+    tuxiancolor("#tuxian3");
+});
+$("#tuxian4").click(function(){
+    tuxiancolor("#tuxian4");
+});
+var winWidth=1490;
+//获取窗口宽度
+ if (document.documentElement  && document.documentElement.clientHeight && document.documentElement.clientWidth){
+    winWidth  = document.documentElement.clientWidth;
+    //winHeight = document.documentElement.clientHeight;
+}
+
+if(color_getCookie("hc_ck_div")=="fd"){
+    $(".ds1").hide();
+    $("#leftColumn").css("left","0");
+    $("#huicetuall").css({"width":winWidth,"height":"710px"});
+    $("#zhexiantu").css({"width":winWidth,"height":"680px"});
+}else{
+    $(".ds1").show();
+    $("#huicetuall").css({"margin-left":"0","width":"658px","height":"348px"});
+    $("#zhexiantu").css({"width":"658px","height":"318px"});
+}
+
+$("#fangda").click(function(){
+    color_SetCookie("hc_ck_div","fd",1);
+    location.reload();
+});
+
+$("#suoxiao").click(function(){
+    color_SetCookie("hc_ck_div","sx",1);
+    location.reload();
+});
+
+tuxiancolor("#tuxian1");
+
+//var myChart = echarts.init(document.getElementById('zhexiantu'));
+
+
+function huatu(tu_name,category,lineData,barData,volData,pcykData){
+// caregory: X轴，lineData：折线图Y轴，barData：柱状图Y轴
+
+
+var myChart = echarts.init(document.getElementById('zhexiantu'));
+
+var Xz = new Array();
+for(var i=0;i<category.length;i++){
+    Xz.push(0);
+}
+
+option = {
+    title: {
+            text: "{{hcd.samedatetime}}",
+            subtext: tu_name,
+            textStyle:{ color:'#0a0' }
+        },
+    backgroundColor: '#0f375f',
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross' //'shadow'
+        }
+    },
+    legend: {
+        data: tu_name,
+        textStyle: {
+            color: '#ccc'
+        }
+    },
+    xAxis: {
+        data: category,
+        axisLine: {
+            lineStyle: {
+                color: '#ccc'
+            }
+        }
+    },
+    yAxis: [
+        {
+        name: tu_name[1],
+        splitLine: {show: false},
+        axisLine: {
+            lineStyle: {
+                color: '#f44'
+            }
+        }
+    },{
+        name: tu_name[0],
+        splitLine: {show: false},
+        axisLine: {
+            lineStyle: {
+                color: '#808080'
+            }
+        }
+    }
+    ],
+    series: [{
+        type: 'line',
+        yAxisIndex: 1,
+        symbol:'none',
+        tooltip : {
+            show:false
+        },
+        itemStyle: {
+            normal: {
+                //barBorderRadius: 'none',
+                lineStyle: { color: '#ccc', width:1, type: 'dotted' }
+            }
+        },
+        data: Xz
+    },{
+        name: tu_name[0],
+        type: 'line',
+        yAxisIndex: 1,
+        smooth: true,
+        showAllSymbol: true,
+        symbol: 'emptyCircle',
+        symbolSize: 1,
+        itemStyle: {
+            normal: {
+                color: '#808080',
+                lineStyle: { color: '#808080' }
+            }
+        },
+        data: lineData
+    },{
+        name: tu_name[2],
+        type: 'bar',
+        yAxisIndex: 0,
+        smooth: true,
+        barWidth: 2,
+        itemStyle: {
+            normal: {
+                barBorderRadius: 1,
+                color: function(params){
+                    if(params.value>0){
+                        return '#FF606B';
+                    }else{
+                        return '#14c8d4';
+                    }
+                }
+            }
+        },
+        data: volData
+    }, {
+        name: "平仓盈亏",
+        type: 'bar', // bar
+        yAxisIndex: 0,
+        smooth: true,
+        barWidth: 2,
+        itemStyle: {
+            normal: {
+                barBorderRadius: 1,
+                color: '#0f0',
+                label: {
+                    show: true,
+                    color:'#ccc',
+                    position: 'top',
+                    formatter: function(params) {
+                        if (params.value != 0) {
+                            return params.value;
+                        } else {
+                            return '';
+                        }
+                    }
+                }
+            }
+        },
+        data: pcykData
+    },{
+        name: tu_name[1],
+        type: 'line', // bar
+        yAxisIndex: 0,
+        smooth: true,
+        barWidth: 2,
+        itemStyle: {
+            normal: {
+                barBorderRadius: 1,
+                color: '#f33',
+                lineStyle: { color: '#f33' },
+                // label : {show: true} // 显示数值
+            }
+        },
+        data: barData,
+        //标记点
+        markPoint:{
+          data:[
+            {type:'max',name:'最大值'},
+            {type:'min',name:'最小值',symbol:'diamond'}//标记的图形
+          ]
+        },
+        //标记线
+        /*markLine:{
+          data:[
+            {type:'average',name:'平均值'}
+          ]
+        }*/
+    }],
+
+dataZoom: [//给x轴设置滚动条
+           {
+            start:6,//默认为0
+               end: 136-1500/31,//默认为100
+               type: 'slider',
+               show: true,
+               xAxisIndex: [0],
+               handleSize: 0,//滑动条的 左右2个滑动条的大小
+               height: 10,//组件高度
+               left: 50, //左边的距离
+               right: 40,//右边的距离
+               bottom: 26,//下边的距离
+               handleColor: '#ddd',//h滑动图标的颜色
+               handleStyle: {
+                   borderColor: "#cacaca",
+                   borderWidth: "1",
+                   shadowBlur: 2,
+                   background: "#ddd",
+                   shadowColor: "#ddd",
+               },
+               fillerColor: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                   //给颜色设置渐变色 前面4个参数，给第一个设置1，第四个设置0 ，就是水平渐变
+                   //给第一个设置0，第四个设置1，就是垂直渐变
+                   offset: 0,
+                   color: '#1eb5e5'
+               }, {
+                   offset: 1,
+                   color: '#5ccbb1'
+               }]),
+               backgroundColor: '#ddd',//两边未选中的滑动条区域的颜色
+               showDataShadow: false,//是否显示数据阴影 默认auto
+               showDetail: true,//即拖拽时候是否显示详细数值信息 默认true
+               handleIcon: 'M-292,322.2c-3.2,0-6.4-0.6-9.3-1.9c-2.9-1.2-5.4-2.9-7.6-5.1s-3.9-4.8-5.1-7.6c-1.3-3-1.9-6.1-1.9-9.3c0-3.2,0.6-6.4,1.9-9.3c1.2-2.9,2.9-5.4,5.1-7.6s4.8-3.9,7.6-5.1c3-1.3,6.1-1.9,9.3-1.9c3.2,0,6.4,0.6,9.3,1.9c2.9,1.2,5.4,2.9,7.6,5.1s3.9,4.8,5.1,7.6c1.3,3,1.9,6.1,1.9,9.3c0,3.2-0.6,6.4-1.9,9.3c-1.2,2.9-2.9,5.4-5.1,7.6s-4.8,3.9-7.6,5.1C-285.6,321.5-288.8,322.2-292,322.2z',
+               filterMode: 'filter',
+           },
+           //下面这个属性是里面拖到
+           {
+               type: 'inside',
+               show: true,
+               xAxisIndex: [0],
+               start: 0,//默认为1
+               end: 100-1500/31,//默认为100
+           }
+           ]
+};
+
+myChart.setOption(option);
+
+}
+
+</script>
+
+{% endif %}
+<script>
+for(var i=1;i<18;i++){
+        tuxiancolort("tuxiantp"+i);
+    }
+    tuxiancolort(tuxiant_id);
+$("#tuxiant24").click(function(){
+    var export_content = $("#export_content");
+    export_content.css("display","block");
+    $("#export_content2").css("display","block");
+
+    //$("#leftColumn").css("display","block");
+    $(".huatut").css("display","none");
+
+    html2canvas(
+            export_content,
+            {
+                dpi: 72,//导出pdf清晰度
+                onrendered: function (canvas) {
+                    var contentWidth = canvas.width;
+                    var contentHeight = canvas.height;
+
+                    //一页pdf显示html页面生成的canvas高度;
+                    var pageHeight = contentWidth / 592.28 * 841.89;
+                    //未生成pdf的html页面高度
+                    var leftHeight = contentHeight;
+                    //pdf页面偏移
+                    var position = 0;
+                    //html页面生成的canvas在pdf中图片的宽高（a4纸的尺寸[595.28,841.89]）
+                    var imgWidth = 595.28;
+                    var imgHeight = 592.28 / contentWidth * contentHeight;
+
+                    var pageData = canvas.toDataURL('image/jpeg', 1.0);
+                    var pdf = new jsPDF('', 'pt', 'a4');
+
+                    //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+                    //当内容未超过pdf一页显示的范围，无需分页
+                    if (leftHeight < pageHeight) {
+                        pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                    } else {
+                        while (leftHeight > 0) {
+                            pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+                            leftHeight -= pageHeight;
+                            position -= 841.89;
+                            //避免添加空白页
+                            if (leftHeight > 0) {
+                                pdf.addPage();
+                            }
+                        }
+                    }
+                    pdf.save('交易检测.pdf');
+                },
+                //背景设为白色（默认为黑色）
+                background: "#fff"
+            });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ operation }}{% endblock %}
+{% block script %}
+{% load staticfiles %}
+<link type="text/css" rel="stylesheet" href="{% static 'admin/css/user.css' %}" >
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}"/>
+<script type="text/javascript" src="{% static 'js/jquery-1.7.1.min.js' %}"></script>
+
+
+{% endblock %}
+{% block center_cen %}
+<div style="color:green;">{{ msg }}</div>
+<!-- Container -->
+<div id="container">
+    <!-- Content -->
+    <div id="content" class="colM">
+        <h1>增加 {{ operation }}</h1>
+        <div id="content-main">
+{% if add_work_log %}
+            <form action="{% url 'add_work_log' %}" method="post" id="worklog_form">
+                {% csrf_token %}
+                <div>
+                    <fieldset class="module aligned ">
+                        <div class="form-row field-date">
+                            <div>
+                                <label class="required" for="id_date">所属工作日期:</label>
+                                <input type="date" name="date" class="vDateField" size="10" value="{{date}}" required id="id_date"/>
+                            </div>
+                        </div>
+                        <div class="form-row field-title">
+                            <div>
+                                <label class="required" for="id_title">标题:</label>
+                                <input type="text" name="title" class="vTextField" maxlength="50" value="{{title}}" required
+                                       id="id_title"/>
+                            </div>
+                        </div>
+                        <div class="form-row field-body">
+                            <div>
+                                <label class="required" for="id_body">详细内容:</label>
+                                <textarea name="body" cols="40" rows="10" class="vLargeTextField" maxlength="300" required id="id_body">{{body}}</textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="submit-row">
+                        <input type="submit" value="保存" class="default" name="_save"/>
+                        <input type="submit" value="保存并增加另一个" name="_addanother"/>
+                        <input type="submit" value="保存并继续编辑" name="_continue"/>
+                    </div>
+                </div>
+            </form>
+
+
+
+{% elif add_simulation_account %}
+
+<form enctype="multipart/form-data" action="{% url 'add_simulation_account' %}" method="post" id="simulationaccount_form">
+    {% csrf_token %}
+<div>
+  <fieldset class="module aligned ">
+
+        <div class="form-row field-host">
+                <div>
+                        <label class="required" for="id_host">交易账号:</label>
+                            <input type="number" name="host" class="vTextField" maxlength="20" required id="id_host" />
+                </div>
+        </div>
+        <div class="form-row field-enabled">
+                <div>
+                        <label class="required" for="id_enabled">状态:</label>
+
+                            <select name="enabled" id="id_enabled">
+  <option value="0" selected>未启用</option>
+  <option value="1">启用</option>
+</select>
+                </div>
+        </div>
+</fieldset>
+
+<div class="submit-row">
+<input type="submit" value="保存" class="default" name="_save" />
+<input type="submit" value="保存并增加另一个" name="_addanother" />
+</div>
+</div>
+</form>
+
+{% elif add_real_account %}
+<form enctype="multipart/form-data" action="" method="post" id="tradingaccount_form">
+    {% csrf_token %}
+<div>
+  <fieldset class="module aligned ">
+        <div class="form-row field-host">
+                <div>
+                        <label class="required" for="id_host">用户名:</label>
+                            <input type="text" name="host" class="vTextField" maxlength="40" required id="id_host" />
+                </div>
+        </div>
+      <div class="form-row field-password">
+                <div>
+                        <label for="id_password">密码:</label>
+                            <input type="password" name="password" class="vTextField" maxlength="50" id="id_password" />
+                </div>
+        </div>
+      <div class="form-row field-enabled">
+                <div>
+                        <label class="required" for="id_enabled">状态:</label>
+
+                            <select name="enabled" id="id_enabled">
+                                <option value="1" selected>启用</option>
+                                <option value="0">未启用</option>
+                            </select>
+                </div>
+        </div>
+        <div class="form-row field-port">
+                <div>
+                        <label for="id_port">端口:</label>
+                            <input type="number" name="port" class="vIntegerField" id="id_port" />
+                </div>
+        </div>
+        <div class="form-row field-license">
+                <div>
+                        <label for="id_license">许可证:</label>
+                            <input type="text" name="license" class="vTextField" maxlength="30" id="id_license" />
+                </div>
+        </div>
+        <div class="form-row field-appid">
+                <div>
+                        <label for="id_appid">ApppID:</label>
+                            <input type="text" name="appid" class="vTextField" maxlength="20" id="id_appid" />
+                </div>
+        </div>
+        <div class="form-row field-userid">
+                <div>
+                        <label for="id_userid">用户ID:</label>
+                            <input type="text" name="userid" class="vTextField" maxlength="20" id="id_userid" />
+                </div>
+        </div>
+</fieldset>
+<div class="submit-row">
+<input type="submit" value="保存" class="default" name="_save" />
+<input type="submit" value="保存并增加另一个" name="_addanother" />
+<input type="submit" value="保存并继续编辑" name="_continue" />
+</div>
+</div>
+</form>
+
+{% elif add_info_public %}
+<form enctype="multipart/form-data" action="{% url 'user_info_public' %}" method="post" id="infopublic_form">
+    {% csrf_token %}
+<div>
+  <fieldset class="module aligned ">
+
+        <div class="form-row field-title">
+                <div>
+                        <label class="required" for="id_title">标题:</label>
+                            <input type="text" name="title" class="vTextField" maxlength="50" value="{{infopublic.0}}" required id="id_title" />
+                </div>
+        </div>
+        <div class="form-row field-body">
+                <div>
+                        <label class="required" for="id_body">详细内容:</label>
+                            <textarea name="body" cols="40" rows="10" class="vLargeTextField" maxlength="600" required id="id_body">{{infopublic.1}}
+</textarea>
+                </div>
+        </div>
+</fieldset>
+<div class="submit-row">
+<input type="submit" value="保存" class="default" name="_save" />
+<input type="submit" value="保存并增加另一个" name="_addanother" />
+<!--<input type="submit" value="保存并继续编辑" name="_continue" />-->
+</div>
+</div>
+</form>
+            {% elif add_info_body %}
+            <form enctype="multipart/form-data" action="" method="post" id="infobody_form">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{id}}">
+<div>
+
+  <fieldset class="module aligned ">
+        <div class="form-row field-body">
+                <div>
+                        <label class="required" for="id_body">内容:</label>
+                            <textarea name="body" cols="40" rows="10" class="vLargeTextField" maxlength="600" required id="id_body">
+</textarea>
+                </div>
+        </div>
+</fieldset>
+<div class="submit-row">
+<input type="submit" value="保存" class="default" name="_save" />
+
+<!--<input type="submit" value="保存并增加另一个" name="_addanother" />-->
+<!--<input type="submit" value="保存并继续编辑" name="_continue" />-->
+</div>
+</div>
+</form>
+{% endif %}
+
+</div>
+        <br class="clear"/>
+    </div>
+    <div id="footer"></div>
+</div>
+{% endblock %}

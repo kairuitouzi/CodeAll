@@ -1,0 +1,107 @@
+
+{% extends 'base/base.html' %}
+{% block title %}柱状图{% endblock %}
+{% block script %}{% endblock %}
+{% block center_cen %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-1.7.1.min.js' %}"></script>
+
+<div id="main" style="width: auto;height: 600px;" align="center"></div>
+    <script type="text/javascript">
+
+var myChart = echarts.init(document.getElementById('main'));
+// 显示标题，图例和空的坐标轴
+var name_code = null;  // 名称：代码
+
+myChart.setOption({
+    //backgroundColor:'#fdfdfd', // 背景颜色
+    color : ["red"],  //"#26aa1b", "#f9873a"
+    title: {
+        text: '权重股'
+    },
+    tooltip: {},
+    legend: {
+        data: []
+    },
+    xAxis: {
+        type: 'category',
+        data: [],
+        axisLabel:{
+            interval:0,
+            rotate:-0.1
+        }
+    },
+    yAxis: {
+        splitLine: { show: true },//false去除网格线
+        name: '',
+        minInterval:1,
+        maxInterval:20
+    },
+    series: [{
+        name: '名称',
+        type: 'bar',
+        data: []
+    }],
+    label:{
+        normal:{
+            show:true,
+            position:'top'
+        }
+    }
+});
+
+myChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
+
+function loadOneColumn() {
+    var series = [];
+    var names = [];    //类别数组（实际用来盛放X轴坐标值）
+    $.ajax({
+        type: 'GET',
+        url: '{% url 'getData' %}',//请求数据的地址
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            //请求成功时执行该函数内容，result即为服务器返回的json对象
+            $.each(result.jinJian, function (index, item) {
+                names.push(item.AREA);    //挨个取出类别并填入类别数组
+                series.push(item.LANDNUM);
+            });
+            name_code = result.name_code;
+            var times=result.times
+            myChart.hideLoading();    //隐藏加载动画
+            myChart.setOption({        //加载数据图表
+                title: {
+                    text: '总点数：'+result.counts+'  时间：'+times,
+                    x:'center'
+                },
+                xAxis: {
+                    data: names
+                },
+                series: [{
+                    data: series
+                }]
+            });      
+        },
+        error: function (errorMsg) {
+            //请求失败时执行该函数
+            alert("图表请求数据失败!");
+            myChart.hideLoading();
+        }
+    });
+};
+loadOneColumn();
+// 柱状图点击事件
+myChart.on('click',function(params){
+    var s = "";
+    var names = params.name.split('\n');
+    for(var i=0;i<names.length;i++){
+        s += names[i];
+     }
+    if(name_code != null){
+        window.open("http://quote.eastmoney.com/hk/"+name_code[s]+".html");
+    }
+});
+var t=setInterval("loadOneColumn()",10000);
+</script></br></br></br></br></br></br></br></br></br></br>
+
+{% endblock %}

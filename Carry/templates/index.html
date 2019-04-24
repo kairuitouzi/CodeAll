@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% block center_cen %}
+<div class="flexslider clearfix">
+    {% load staticfiles %}
+    <div id="page_wrap">
+        	<h2 class="intro-title">您好! <a href="{% url 'index' %}" >凯瑞</a> 投资有限公司</h2>
+        	<ul class="slides">
+            	<li><a href="javascript:gxjy();"><img src="{% static 'images/featured/featured-1.jpg' %}" alt="Image" /></a>
+                </li>
+                <li><a href="javascript:gxjy();"><img src="{% static 'images/featured/featured-2.jpg' %}" alt="Image" /></a>
+                </li>
+                <li><a href="javascript:gxjy();"><img src="{% static 'images/featured/featured-3.jpg' %}" alt="Image" /></a>
+                </li>
+            </ul>
+        </div>
+        </div>
+        <div class="copyrights"></div>
+        <div id="page_container" align="center">
+
+            <div class="page-title">
+                <span style="font-size: 24px;">文化</span>
+            </div>
+            <div class="list_work">
+        	<ul id="mycarousel" class="jcarousel-skin-tango ">
+            	<li class="mosaic-block1 circle"><a href="{% static 'images/preview/work_2_l.jpg' %}" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="{% static 'images/work/work-1.jpg' %}" alt="" />
+                <span>做事循天理<br><small>出言顺人心</small></span></li>
+                <li class="mosaic-block1 circle"><a href="{% static 'images/preview/work_2_l.jpg' %}" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="{% static 'images/work/work-2.jpg' %}" alt="" />
+                <span>有上不去的天<br><small>没过不去的关</small></span></li>
+                <li class="mosaic-block1 circle"><a href="{% static 'images/preview/work_2_l.jpg' %}" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="{% static 'images/work/work-3.jpg' %}" alt="" />
+                <span>志高品高<br><small>志下品下</small></span></li>
+                <li class="mosaic-block1 circle"><a href="{% static 'images/preview/work_2_l.jpg' %}" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="{% static 'images/work/work-4.jpg' %}" alt="" />
+                <span>人靠自修<br><small>树靠人修</small></span></li>
+                <li class="mosaic-block1 circle"><a href="{% static 'images/preview/work_2_l.jpg' %}" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="{% static 'images/work/work-1.jpg' %}" alt="" />
+                <span>宁做蚂蚁腿<br><small>不学麻雀嘴</small></span></li>
+                <li class="mosaic-block1 circle"><a href="{% static 'images/preview/work_2_l.jpg' %}" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="{% static 'images/work/work-2.jpg' %}" alt="" />
+                <span>百日连阴雨<br><small>总有一朝晴</small></span></li>
+            </ul>
+        </div>
+
+        </div>
+    </div>
+<script>
+    function gxjy(){
+        window.location = "{% url 'gxjy' %}";
+    }
+</script>
+</div>
+{% endblock %}

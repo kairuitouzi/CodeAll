@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% block title %}折线图{% endblock %}
+{% block script %}<meta http-equiv="refresh" content="20">{% endblock %}
+{% block center_cen %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-1.7.1.min.js' %}"></script>
+
+<div id="main" style="width: auto;height: 700px;" align="center"></div>
+    <script type="text/javascript">
+
+function loadOneColumn() {
+
+    var myChart = echarts.init(document.getElementById('main'));
+
+    option = {
+        //backgroundColor:'#fdfdfd', # 背景颜色
+        tooltip: {
+            trigger: 'axis'
+        },
+        color:{{ colors|safe }},
+        legend: {
+            data: {{ names|safe }}
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+        calculable: true,
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: false,
+                data: {{ times|safe }}
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                maxInterval:30
+            }
+        ],
+        series: {{ data|safe }}
+    };
+
+    myChart.setOption(option);
+};
+loadOneColumn();
+//var t=setInterval("loadOneColumn()",5000);
+</script></br></br></br></br></br></br></br></br>
+{% endblock %}

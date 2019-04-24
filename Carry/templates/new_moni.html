@@ -1,0 +1,363 @@
+{% extends 'base/base.html' %}
+{% block title %}挖掘方案{% endblock %}
+{% block script %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/radio.css' %}" />
+<style>
+    .radio_label{ cursor:pointer; }
+</style>
+<script>
+function openLogin(id){
+   document.getElementById(id).style.display="";
+   if(id=="beizhu_img"){
+    $("#beizhu_img_src").attr("src","{% static 'images/fa/方案' %}"+"{{fa}}.png");
+    }
+}
+function closeLogin(id){
+   document.getElementById(id).style.display="none";
+}
+function huice(){
+    var dates = document.getElementById("datetimes").value;
+    var end_date = document.getElementById("end_date").value;
+    var database = document.getElementById("select_db").value;
+    var zsds = document.getElementById("zsds").value;
+    var ydzs = document.getElementById("ydzs").value;
+    var zyds = document.getElementById("zyds").value;
+    var cqdc = document.getElementById("cqdc").value;
+    //location.href="{% url 'huice' %}?dates="+dates+"&ts="+ts+"&fa="+fa+"&database="+database;
+    // zsds, ydzs, zyds, cqdc
+    window.open("{% url 'huice' %}?dates="+dates+"&end_date="+end_date+"&database="+database+"&zsds="+zsds+"&ydzs="+ydzs+"&zyds="+zyds+"&cqdc="+cqdc);
+}
+
+</script>
+{% endblock %}
+{% block center_cen %}
+<div align="center" id="beizhu_img" style="display:none;position: absolute; left:50%; top:50%;width:800px; margin-left:-300px; margin-top:-200px;
+border:1px solid #888; background-color:green; text-align:center"><span>方案图例</span><br/><br/>
+    <img id="beizhu_img_src" src="" alt="无此方案图例" />
+    <br/>
+<a href="javascript:closeLogin('beizhu_img');"><h2 style="background-color:green;">确 定</h2></a></div>
+</div>
+<div align="center" id="beizhu" style="display:none;position: absolute; left:50%; top:50%;width:800px; margin-left:-300px; margin-top:-200px;
+border:1px solid #888; background-color:green; text-align:center"><span>方案备注</span><br/><br/>
+    <ol style="list-style-type:none;">
+        {% for k,v in fa_doc.items %}
+        {% if k != 'z' %}
+        <li>方案{{k}}：{{v}}</li>
+        {% else %}
+        <li>{{v}}</li>
+        {% endif %}
+        {% endfor %}
+    </ol><br/>
+<a href="javascript:closeLogin('beizhu');"><h2 style="background-color:green;">确 定</h2></a></div>
+</div>
+    <div align="center">
+    <form action="" method="GET">
+        <table width="950" border="1">
+            <tr><td>做多条件：</td>
+                <td><label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_macd" value="0" {%if duo_macd == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>macd小于零
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_avg" value="0" {%if duo_avg == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>收盘价小于60均线
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_yidong" value="0" {%if duo_yidong == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>异动小于1.5倍
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_chonghes" value="0" {%if duo_chonghes == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>阴线重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_chonghed" value="0" {%if duo_chonghed == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>前阳后阴重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_k" value="0" {%if duo_k == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>K值小于20
+                    </label>
+                    <br/>
+
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_macd" value="1" {%if duo_macd == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>macd大于零
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_avg" value="1" {%if duo_avg == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>收盘价大于60均线
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_yidong" value="1" {%if duo_yidong == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>异动大于1.5倍
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_chonghes" value="1" {%if duo_chonghes == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>阳线重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="duo_chonghed" value="1" {%if duo_chonghed == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>前阴后阳重合
+                    </label>
+                </td>
+                </tr>
+            <tr><td>做空条件：</td>
+                <td>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_macd" value="0" {%if kong_macd == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>macd小于零
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_avg" value="0" {%if kong_avg == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>收盘价小于60均线
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_yidong" value="0" {%if kong_yidong == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>异动小于1.5倍
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_chonghes" value="0" {%if kong_chonghes == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>阴线重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_chonghed" value="0" {%if kong_chonghed == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>前阳后阴重合
+                    </label>
+
+                    <br/>
+
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_macd" value="1" {%if kong_macd == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>macd大于零
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_avg" value="1" {%if kong_avg == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>收盘价大于60均线
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_yidong" value="1" {%if kong_yidong == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>异动大于1.5倍
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_chonghes" value="1" {%if kong_chonghes == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>阳线重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_chonghed" value="1" {%if kong_chonghed == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>前阴后阳重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="kong_k" value="0" {%if kong_k == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>K值大于80
+                    </label>
+                </td></tr>
+            <tr><td>平多单条件：</td>
+                <td>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_macd" value="0" {%if pdd_macd == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>macd小于零
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_avg" value="0" {%if pdd_avg == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>收盘价小于60均线
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_yidong" value="0" {%if pdd_yidong == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>异动小于1.5倍
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_chonghes" value="0" {%if pdd_chonghes == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>阴线重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_chonghed" value="0" {%if pdd_chonghed == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>前阳后阴重合
+                    </label>
+
+                    <br/>
+
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_macd" value="1" {%if pdd_macd == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>macd大于零
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_avg" value="1" {%if pdd_avg == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>收盘价大于60均线
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_yidong" value="1" {%if pdd_yidong == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>异动大于1.5倍
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_chonghes" value="1" {%if pdd_chonghes == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>阳线重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_chonghed" value="1" {%if pdd_chonghed == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>前阴后阳重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pdd_k" value="0" {%if pdd_k == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>K值大于80
+                    </label>
+                </td></tr>
+            <tr><td>平空单条件：</td>
+                <td>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_macd" value="0" {%if pkd_macd == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>macd小于零
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_avg" value="0" {%if pkd_avg == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>收盘价小于60均线
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_yidong" value="0" {%if pkd_yidong == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>异动小于1.5倍
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_chonghes" value="0" {%if pkd_chonghes == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>阴线重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_chonghed" value="0" {%if pkd_chonghed == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>前阳后阴重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_k" value="0" {%if pkd_k == '0'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>K值小于20
+                    </label>
+                    <br/>
+
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_macd" value="1" {%if pkd_macd == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>macd大于零
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_avg" value="1" {%if pkd_avg == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>收盘价大于60均线
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_yidong" value="1" {%if pkd_yidong == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>异动大于1.5倍
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_chonghes" value="1" {%if pkd_chonghes == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>阳线重合
+                    </label>
+                    <label class="radio_label">
+                        <input class="radio_radio" type="radio" name="pkd_chonghed" value="1" {%if pkd_chonghed == '1'%}checked{%endif%}>
+                        <span class="radio_radioInput"></span>前阴后阳重合
+                    </label>
+                </td></tr>
+        </table>
+        <table width="950">
+            <tr><td>止损点数：<input type="number" style="width:100px;" min="10" name="zsds" value="{{ zsds }}" id="zsds"></td>
+                <td>移动止损：<input type="number" style="width:100px;" min="10" name="ydzs" value="{{ ydzs }}" id="ydzs"></td>
+                <td>止盈：<input type="number"  style="width:100px;" min="10" name="zyds" value="{{ zyds }}" id="zyds"></td>
+                <td>点差：<input type="number"  style="width:100px;" min="0" name="cqdc" value="{{ cqdc }}" id="cqdc"></td>
+                <td>数据库：<select name="database" id="select_db">
+            {% if database == '1' %}
+            <option value="1" >sql</option>
+            <option value="2">mongodb</option>
+            {% else %}
+            <option value="2">mongodb</option>
+            <option value="1" >sql</option>
+            {% endif %}
+            </select></td></tr>
+            <tr><td>开始时间：<input type="date" name="dates" id="datetimes" value="{{ dates }}"/></td>
+                <td>结束时间：<input type="date" name="end_date" id="end_date" value="{{ end_date }}"/></td>
+                <td><input type="button" value="回测" onclick="huice()"/></td>
+                <td><input type="button" id="zuoduo_cancel" value="取消所有" size="20">
+                </td>
+                <td><input type="submit" value="测试" style="background-color:#ff0323;width:50px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="submit" value="反测" name="reverse" style="background-color:#ff0323;width:50px;"/></td>
+            </tr>
+            <tr>
+                <td>最近测试的最高纪录：</td>
+                <td><input type="button" value="最高胜率" style="background-color:orange;" onclick="javascript:location.href='{% url 'newMoni' %}?MAX=1'"></td>
+                <td><input type="button" value="最高总盈亏" style="background-color:orange;" onclick="javascript:location.href='{% url 'newMoni' %}?MAX=2'"></td>
+                <td><input type="button" value="最高每单盈亏" style="background-color:orange;" onclick="javascript:location.href='{% url 'newMoni' %}?MAX=3'"></td>
+                <td><input type="button" value="最高每天盈亏" style="background-color:orange;" onclick="javascript:location.href='{% url 'newMoni' %}?MAX=4'"></td>
+            </tr>
+        </table>
+    </form><br/>
+        <table border="1" align="center">
+            {% if huizong %}
+            <tr><th colspan="8"><span style="font-size: 20px;">汇 总&nbsp;&nbsp;&nbsp;&nbsp;<a style="color:blue;" href="#" onclick="openLogin('beizhu_img')">方案{{fa}}</a></span><br/><span>做多：{{fa_one.0}}<br/>做空：{{fa_one.1}}<br/>止损：{{fa_one.2}}</span></th></tr>
+        <tr><th>正确率(%)</th><th>总盈亏(去点差)</th><th>总共做单</th><th>每单盈亏<br>每天盈亏</th><th>一天<br>亏损最多  <a style="color:blue;" href="#yidan_ks">查看一单</a></th>
+            <th>亏损<br>涨幅与波动</th><th>一天<br>盈利最多  <a style="color:blue;" href="#yidan_yl">查看一单</a></th><th>盈利<br>涨幅与波动</th></tr>
+        <tr bgcolor="#cccc33"><td>{{ huizong.shenglv }}</td><td>{{ huizong.yk }}</td><td>{{ huizong.zl }}</td><td>{{ huizong.avg|floatformat:2 }}<br>{{ huizong.avg_day|floatformat:2 }}</td>
+            <td><a style="color:blue;" href="{% url 'kline' %}?date={{ huizong.least.0 }}&database={{database}}">{{ huizong.least.0 }}</a><br>{{ huizong.least.1 }}</td>
+            <td>涨幅：{{ huizong.least.2|floatformat:0 }} 点<br>波动：{{ huizong.least.3|floatformat:0 }} 点</td>
+            <td><a style="color:blue;" href="{% url 'kline' %}?date={{ huizong.most.0 }}&database={{database}}">{{ huizong.most.0 }}</a><br>{{ huizong.most.1 }}</td>
+            <td>涨幅：{{ huizong.most.2|floatformat:0 }} 点<br>波动：{{ huizong.most.3|floatformat:0 }} 点</td></tr>
+        {% else %}
+        <h3 style="color:green;">请选择好参数并按《测试》按钮进行测试！</h3>
+        {% endif %}
+        </table><br/>
+    <table border="1" align="center">
+    {% for v in res %}
+        {% if forloop.first %}
+            <tr><th style="width:100px;">日期&nbsp;&nbsp;({{res_length}})天</th><th style="width:50px;">多单</th><th style="width:50px;">空单</th><th style="width:50px;">盈亏</th><th>大于1.5倍</th><th>小于-1.5倍</th><th>K线重合</th>
+                <th>详细数据
+                <table border="1" style="width:650px;">
+                        <tr><th style="width:400px;">时间段</th><th style="width:150px;">多空</th><th>盈亏</th></tr>
+                </table>
+                </th></tr>
+            {% if first_time %}
+                    <tr><td style="color:green;" colspan="7">{{first_time.0}}</td><td colspan="2">{{first_time.1}}</td></tr>
+            {% endif %}
+        {% endif %}
+        <tr bgcolor="{% cycle '#cccc33' '#00cc00' %}"><td>{{ v.time }}</td><td>{{ v.duo }}</td><td>{{ v.kong }}</td><td>{{ v.mony }}</td><td>{{ v.dy }}</td><td>{{ v.xy }}</td><td>{{ v.ch }}</td>
+            <td>
+                <table border="1" style="width:650px;">
+                    {% for i in v.datetimes %}
+                        <tr><td style="width:400px;"><a style="color:blue;" href="{% url 'kline' %}?date={{ i.0 }}&database={{database}}">{{ i.0 }}--{{ i.1 }}</a></td><td style="width:150px;">{{ i.2 }}</td>
+                            {% if i.3 == huizong.least2 %}
+                            <td style="background:white;"><a style="color:black;" name="yidan_ks">{{ i.3 }}</a></td>
+                            {% elif i.3 == huizong.most2 %}
+                            <td style="background:red;"><a style="color:black;" name="yidan_yl">{{ i.3 }}</a></td>
+                            {% else %}
+                            <td>{{ i.3 }}</td>
+                            {% endif %}
+                        {% endfor %}
+                </table>
+            </td></tr>
+    {% endfor %}
+    </table>
+    </div>
+    <script type="text/javascript">
+        $('div>table').css({'width': '1050px', 'cellpadding': 'auto', 'text-align': 'center', 'rules': 'all'});
+        <!--$("tr:odd").css({"background-color": "#cccc33"});-->
+        <!--$('tr:even').css({'background-color': '#00cc00'});-->
+        $('tr').css({'height': '30'});
+        var moni_radio = $(".radio_radio");
+        var zuoduo_cancel = $("#zuoduo_cancel");
+        zuoduo_cancel.click(function(){
+            // 移除属性,两种方式都可以
+            //moni_radio.removeAttr("checked");
+            moni_radio.attr("checked",false);
+        });
+        var checkeds = new Array();
+        $(".radio_radio").click(function(){
+            var name = $(this).attr("name")
+            var val = $(this).val();
+            var _checked = name+val;
+            var _checked2 = val=='0'?name+1:name+0;
+            if(!checkeds[_checked] || checkeds[_checked2]%2){
+                checkeds[_checked] = 1;
+                checkeds[_checked2] = 0;
+            }else{
+                checkeds[_checked] ++;
+            }
+            if(checkeds[_checked]%2){
+                $(this).attr("checked",true);
+            }else{
+                $(this).attr("checked",false);
+            }
+        });
+    </script>
+{% endblock %}

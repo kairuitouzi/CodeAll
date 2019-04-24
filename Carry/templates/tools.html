@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+{% block center_cen %}
+    <div align="center">
+{% for clj in cljs %}
+    <a style="color:green;font-size:20px;" href="{{ clj.addres }}">{{ clj.name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    {% with isen=forloop.counter|divisibleby:7 %}
+        {% if isen %}
+            <br/>
+        {% endif %}
+    {% endwith %}
+{% endfor %}
+    </div>
+{% endblock %}

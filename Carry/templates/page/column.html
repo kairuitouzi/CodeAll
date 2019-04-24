@@ -1,0 +1,300 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Kleenex - Fully Responsive Business Template</title>
+<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+<link href="css/style.css" type="text/css" rel="stylesheet" media="screen" /> <!-- General style -->
+<link href="css/tipsy.css" type="text/css" rel="stylesheet" media="screen"><!--tooltip-->
+
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+
+<script type="text/javascript" src="js/css3-mediaqueries.js"></script><!--mediaqueries-->
+<script type="text/javascript" src="js/modernizr-1.7.min.js"></script><!--modernizr-->
+<script type="text/javascript" src="js/ddsmoothmenu.js"> </script> <!--menu--> 
+<script type="text/javascript" src="js/jquery.tipsy.js"></script><!--tooltip-->
+<script type="text/javascript" src="js/grayscale-image.js"></script><!-- Grayscale Image -->	
+<script src="js/jquery.color.js"></script><!--search effect-->
+<script src="js/script.js"></script><!--search effect-->
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4f65e9ad7e8909a5"></script><!-- bookmark-->
+<!--menu--> 
+<script type="text/javascript"> 
+ddsmoothmenu.init({
+	mainmenuid: "smoothmenu1", //menu DIV id
+	orientation: 'h', //Horizontal or vertical menu: Set to "h" or "v"
+	classname: 'ddsmoothmenu', //class added to menu's outer DIV
+	//customtheme: ["#1c5a80", "#18374a"],
+	contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
+	})
+$(window).load(function() {
+$('a.tip').tipsy({fade: true, gravity: 's'});
+});
+</script>
+<!--BEGIN:SELECTED MENU-->
+<script type="text/javascript">
+	 // DOM ready
+	 $(function() {
+	   
+      // Create the dropdown base
+      $("<select />").appendTo("nav");
+      
+      // Create default option "Go to..."
+      $("<option />", {
+         "selected": "selected",
+         "value"   : "",
+         "text"    : "Go to..."
+      }).appendTo("nav select");
+      
+      // Populate dropdown with menu items
+      $("nav a").each(function() {
+       var el = $(this);
+       $("<option />", {
+           "value"   : el.attr("href"),
+           "text"    : el.text()
+       }).appendTo("nav select");
+      });
+      
+	   // To make dropdown actually work
+	   // To make more unobtrusive: http://css-tricks.com/4064-unobtrusive-page-changer/
+      $("nav select").change(function() {
+        window.location = $(this).find("option:selected").val();
+      });
+	 
+	 });
+</script>
+<!--Go To Top-->
+	<script type="text/javascript"> 
+    $(function() {
+        $(window).scroll(function() {
+            if($(this).scrollTop() > 200) {
+                $('#top-area').fadeIn();	
+            } else {
+                $('#top-area').fadeOut();
+            }
+        });
+     
+        $("#totop, #gotop").click(function(){
+		$('html, body').animate({ scrollTop: 0 }, 800);
+		})
+    });
+</script>
+<!--Tabulation-->
+<script type="text/javascript">
+$(document).ready(function(){
+$('#tabs div').hide();
+$('#tabs div:first').show();
+$('#tabs ul li:first').addClass('active');
+$('#tabs ul li a').click(function(){ 
+$('#tabs ul li').removeClass('active');
+$(this).parent().addClass('active'); 
+var currentTab = $(this).attr('href'); 
+$('#tabs div').hide();
+$(currentTab).show();
+return false;
+});
+});
+</script>
+</head>
+
+<body>
+	<div id="top-area">
+    	<div id="top-wrap">
+        	<ul class="social_media">
+            	<li class="first"><a href="#" class="tip" title="LinkedIn"><img src="images/social-linkedin-32x32.png" alt="LinkedIn" /></a></li>
+                <li><a href="#" class="tip" title="Dribbble"><img src="images/social-dribbble-32x32.png" alt="Dribbble" /></a></li>
+                <li><a href="#" class="tip" title="Facebook"><img src="images/social-facebook-32x32.png" alt="Facebook" /></a></li>
+                <li><a href="#" class="tip" title="Flickr"><img src="images/social-flickr-32x32.png" alt="Flickr" /></a></li>
+                <li><a href="#" class="tip" title="Twitter"><img src="images/social-twitter-32x32.png" alt="Twitter" /></a></li>
+            	<li><a href="#" class="tip" title="Wordpress"><img src="images/social-wordpress-32x32.png" alt="Wordpress" /></a></li>
+                <li><a href="#" class="tip" title="Skype"><img src="images/social-skype-32x32.png" alt="Skype" /></a></li>
+                <li><a href="#" class="tip" title="RSS"><img src="images/social-rss-32x32.png" alt="RSS" /></a></li>
+            </ul>
+    		<span id="gotop"><a href="#" title="Back to top">&dagger;</a></span>
+        </div>
+    </div> 
+	<header>
+        <div id="header_wrap">
+            <h1 class="logo"><a href="index.html">Kleenex</a></h1>
+            <nav id="smoothmenu1" class="ddsmoothmenu">
+                <ul>
+                    <li><a href="index.html" class="no-border-left">Home</a></li>
+                    <li><a href="about.html">About</a>
+                    	<ul>
+                        	<li class="no-border-top"><a href="services.html">Services</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a>
+                    <ul>
+                        <li class="no-border-top"><a href="single.html">Single</a></li>
+                    </ul>
+                    </li>
+                    <li><a href="#">Portfolio</a>
+                    <ul>
+                        <li class="no-border-top"><a href="portfolio.html">Portfolio Filterable</a></li>
+                        <li><a href="portfolio2.html">Portfolio 2 Column</a></li>
+                        <li><a href="portfolio3.html">Portfolio 3 Column</a></li>
+                        <li><a href="portfolio4.html">Portfolio 4 Column</a></li>
+                        <li><a href="portfolio-sidebar.html">Portfolio with Sidebar</a></li>
+                        <li><a href="portfolio-detail.html">Portfolio with Detail</a></li>
+                    </ul>
+                    </li>
+                    <li><a href="#" class="current">Pages</a>
+                    	<ul>
+                        	<li class="no-border-top"><a href="testimonial.html">Testimonial Page</a></li>
+                            <li><a href="faqs.html">FAQs Page</a></li>
+                            <li><a href="column.html">Column Page</a></li>
+                            <li><a href="fullwidth.html">Fullwidth Page</a></li>
+                            <li><a href="button.html">Button Page</a></li>
+                            <li><a href="list.html">List Page</a></li>
+                            <li><a href="typography.html">Typography Page</a></li>
+                            <li><a href="404page.html">404 Page</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header><!--end:header-->
+	<div id="page_wrap">
+    	<div class="breadcrumbs">
+        	<div class="second">
+            	<h2>Ready made column</h2>
+				<span class="left"><a href="index.html">Home</a></span>
+			    <span>&rArr; columns</span>
+			</div>
+            <form id="searchForm">
+                <fieldset>
+                    <div class="input">
+                        <input type="text" name="s" id="s" value="Enter your search" />
+                    </div>
+                    <input type="submit" id="searchSubmit" value="" />
+                </fieldset>
+            </form>
+		</div><!--end:breadcrumbs-->
+        <div id="page_container">
+        	<div class="whole">
+            	<h3>Full width Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra. Curabitur rutrum arcu vel mi placerat at luctus eros laoreet. Praesent augue felis, facilisis vitae mollis non, ornare eu quam. Proin vel nibh sit amet turpis ornare vulputate. Mauris sit amet leo eget tortor gravida accumsan. Pellentesque tortor massa, accumsan sed porttitor in, tempus condimentum sapien. Ut egestas consequat ultricies.</p>
+            </div>
+            <div class="one-half first">
+            	<h3>Two Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra.</p>
+            </div>
+            <div class="one-half">
+            	<h3>Two Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra.</p>
+            </div>
+            <div class="one-third first">
+            	<h3>Three Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra.</p>
+            </div>
+            <div class="one-third">
+            	<h3>Three Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra.</p>
+            </div>
+            <div class="one-third">
+            	<h3>Three Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra.</p>
+            </div>
+            <div class="one-fourth first">
+            	<h3>Four Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra.</p>
+            </div>
+            <div class="one-fourth">
+            	<h3>Four Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra.</p>
+            </div>
+            <div class="one-fourth second">
+            	<h3>Four Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra.</p>
+            </div>
+            <div class="one-fourth">
+            	<h3>Four Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum. Nulla rhoncus velit in lacus interdum tincidunt faucibus mi porttitor. Suspendisse semper ullamcorper viverra.</p>
+            </div>
+            <div class="one-fifth first">
+            	<h3>Five Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum.</p>
+            </div>
+            <div class="one-fifth">
+            	<h3>Five Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum.</p>
+            </div>
+            <div class="one-fifth">
+            	<h3>Five Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum.</p>
+            </div>
+            <div class="one-fifth">
+            	<h3>Five Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum.</p>
+            </div>
+            <div class="one-fifth">
+            	<h3>Five Column</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac augue vel ipsum feugiat placerat. Phasellus ac nulla ut ligula pellentesque auctor non non odio. Nullam eu quam orci, non vulputate ipsum.</p>
+            </div>
+        </div><!--end:page_container-->
+    </div><!--end:page_wrap-->
+    <footer>
+    	<div id="footer-wrap">
+        	<span id="totop"><a href="#" title="Back to top">top</a></span>
+        	<div class="one-fourth first">
+            	<h3>Contact Details</h3>
+                <p>Telephone: +1234 567 8910<br>
+					Fax: 1098 765 4321<br>
+					E-mail: <a href="#">louiejiemahusay@gmail.com</a></p>
+                <p>Zone 8, Upper Puerto, Cagayan de Oro City, Philippines</p>    
+                <h3>Sign up for our newsletter</h3>
+                <form action="#" method="POST" class="subs">
+                    <fieldset>
+                        <input type="text" name="emailadd" class="emailadd" value="Type your email address" onBlur="if (this.value == ''){this.value = 'Type your email address'; }" onFocus="if (this.value== 'Type your email address') {this.value = ''; }" />
+                    	<input type="submit" name="submit" value="Go" class="submit" />
+                	</fieldset>
+                </form>
+            </div>
+            <div class="one-fourth">
+            	<h3>Related Links</h3>
+                <ul class="links">
+                	<li><a href="#">html5awesome</a></li>
+                    <li><a href="#">Themeforest</a></li>
+                    <li><a href="#">Mojo Themes</a></li>
+                    <li><a href="#">Webdesignledger</a></li>
+                    <li><a href="#">Smashing Magazine</a></li>
+                    <li><a href="#">Web Appers</a></li>
+					<li><a href="#">The Best Design</a></li>
+                </ul>
+            </div>
+            <div class="one-fourth second">
+            	<h3>Flickr Stream</h3>
+                <ul class="flickr">
+                	<li class="first"><a href="#"><img src="images/flickr/flickr-1.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-2.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-3.jpg" alt="" /></a></li>
+                    <li class="first"><a href="#"><img src="images/flickr/flickr-4.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-5.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-6.jpg" alt="" /></a></li>
+                    <li class="first"><a href="#"><img src="images/flickr/flickr-7.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-8.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-9.jpg" alt="" /></a></li>
+                </ul>
+            </div>
+            <div class="one-fourth">
+            	<h3>Any question just contact us!</h3>
+                <form action="#" method="POST" class="quick-contact">
+                    <fieldset>
+                        <input type="text" name="emailadd" class="emailadd" value="Email Address" onBlur="if (this.value == ''){this.value = 'Email Address'; }" onFocus="if (this.value== 'Email Address') {this.value = ''; }" />
+                        <textarea name="message" rows="4" cols="10" onblur="if (this.value == ''){this.value = 'Your Message'; }" onfocus="if (this.value == 'Your Message') {this.value = '';}">Your Message</textarea>
+                        <input type="submit" name="submit" class="submit" value="Send">
+                	</fieldset>
+                </form>
+            </div>
+        </div><!--end:footer-wrap-->
+        <div id="copyright">
+        	<div id="copy-wrap">
+    			<p>&copy; Copyright &copy; 2013.Company name All rights reserved.<a target="_blank" href="http://www.cssmoban.com/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>
+            </div>
+    	</div>
+    </footer><!--end:footer-->
+
+</body>
+</html>

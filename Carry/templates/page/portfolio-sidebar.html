@@ -1,0 +1,400 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Kleenex - Fully Responsive Business Template</title>
+<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+<link href="css/style.css" type="text/css" rel="stylesheet" media="screen" /> <!-- General style -->
+<link href="css/tipsy.css" type="text/css" rel="stylesheet" media="screen"><!--tooltip-->
+<link rel="stylesheet" href="css/mosaic.css" type="text/css" media="screen" /><!-- mosaic -->
+<link href="css/prettyPhoto.css" type="text/css" rel="stylesheet" media="screen"><!-- prettyPhoto -->
+
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+
+<script type="text/javascript" src="js/css3-mediaqueries.js"></script><!--mediaqueries-->
+<script type="text/javascript" src="js/modernizr-1.7.min.js"></script><!--modernizr-->
+<script type="text/javascript" src="js/ddsmoothmenu.js"> </script> <!--menu--> 
+<script type="text/javascript" src="js/jquery.tipsy.js"></script><!--tooltip-->
+<script type="text/javascript" src="js/grayscale-image.js"></script><!-- Grayscale Image -->	
+<script type="text/javascript" src="js/mosaic.1.0.1.js"></script> <!-- mosaic -->
+<script type="text/javascript" src="js/jquery.prettyPhoto.js"></script><!-- prettyPhoto -->
+<script type="text/javascript" src="js/jquery.isotope.min.js"></script><!-- isotope -->
+<script src="js/jquery.color.js"></script><!--search effect-->
+<script src="js/script.js"></script><!--search effect-->
+<!--menu--> 
+<script type="text/javascript"> 
+ddsmoothmenu.init({
+	mainmenuid: "smoothmenu1", //menu DIV id
+	orientation: 'h', //Horizontal or vertical menu: Set to "h" or "v"
+	classname: 'ddsmoothmenu', //class added to menu's outer DIV
+	//customtheme: ["#1c5a80", "#18374a"],
+	contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
+	})
+$(window).load(function() {
+$('a.tip').tipsy({fade: true, gravity: 's'});
+});
+</script>
+<!--BEGIN:SELECTED MENU-->
+<script type="text/javascript">
+	 // DOM ready
+	 $(function() {
+	   
+      // Create the dropdown base
+      $("<select />").appendTo("nav");
+      
+      // Create default option "Go to..."
+      $("<option />", {
+         "selected": "selected",
+         "value"   : "",
+         "text"    : "Go to..."
+      }).appendTo("nav select");
+      
+      // Populate dropdown with menu items
+      $("nav a").each(function() {
+       var el = $(this);
+       $("<option />", {
+           "value"   : el.attr("href"),
+           "text"    : el.text()
+       }).appendTo("nav select");
+      });
+      
+	   // To make dropdown actually work
+	   // To make more unobtrusive: http://css-tricks.com/4064-unobtrusive-page-changer/
+      $("nav select").change(function() {
+        window.location = $(this).find("option:selected").val();
+      });
+	 
+	 });
+</script>
+<!--Go To Top-->
+	<script type="text/javascript"> 
+    $(function() {
+        $(window).scroll(function() {
+            if($(this).scrollTop() > 200) {
+                $('#top-area').fadeIn();	
+            } else {
+                $('#top-area').fadeOut();
+            }
+        });
+     
+        $("#totop, #gotop").click(function(){
+		$('html, body').animate({ scrollTop: 0 }, 800);
+		})
+    });
+</script>
+<!--Tabulation-->
+<script type="text/javascript">
+$(document).ready(function(){
+$('#tabs div').hide();
+$('#tabs div:first').show();
+$('#tabs ul li:first').addClass('active');
+$('#tabs ul li a').click(function(){ 
+$('#tabs ul li').removeClass('active');
+$(this).parent().addClass('active'); 
+var currentTab = $(this).attr('href'); 
+$('#tabs div').hide();
+$(currentTab).show();
+return false;
+});
+});
+</script>
+<script type="text/javascript">
+jQuery(function($){
+	$('.circle, .views-side, .vid2').mosaic({
+		opacity		:	0.8			//Opacity for overlay (0-1)
+	});	    
+});
+</script>
+<!--Pretty Photo Animate and Isotope-->
+<script type="text/javascript">
+$(window).load(function() {
+$("a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'fast',slideshow:10000, hideflash: true});
+var $container = $('#works-container');
+var $container = $('#works-container');
+$container.isotope({
+ itemSelector : '.element'
+});
+var $optionSets = $('#options .option-set'),
+          $optionLinks = $optionSets.find('a');
+
+      $optionLinks.click(function(){
+        var $this = $(this);
+        // don't proceed if already selected
+        if ( $this.hasClass('selected') ) {
+          return false;
+        }
+        var $optionSet = $this.parents('.option-set');
+        $optionSet.find('.selected').removeClass('selected');
+        $this.addClass('selected');
+  
+        // make option object dynamically, i.e. { filter: '.my-filter-class' }
+        var options = {},
+            key = $optionSet.attr('data-option-key'),
+            value = $this.attr('data-option-value');
+        // parse 'false' as false boolean
+        value = value === 'false' ? false : value;
+        options[ key ] = value;
+        if ( key === 'layoutMode' && typeof changeLayoutMode === 'function' ) {
+          // changes in layout modes need extra logic
+          changeLayoutMode( $this, options )
+        } else {
+          // otherwise, apply new options
+          $container.isotope( options );
+        }
+        
+        return false;
+      });
+});
+</script>
+</head>
+
+<body>
+	<div id="top-area">
+    	<div id="top-wrap">
+        	<ul class="social_media">
+            	<li class="first"><a href="#" class="tip" title="LinkedIn"><img src="images/social-linkedin-32x32.png" alt="LinkedIn" /></a></li>
+                <li><a href="#" class="tip" title="Dribbble"><img src="images/social-dribbble-32x32.png" alt="Dribbble" /></a></li>
+                <li><a href="#" class="tip" title="Facebook"><img src="images/social-facebook-32x32.png" alt="Facebook" /></a></li>
+                <li><a href="#" class="tip" title="Flickr"><img src="images/social-flickr-32x32.png" alt="Flickr" /></a></li>
+                <li><a href="#" class="tip" title="Twitter"><img src="images/social-twitter-32x32.png" alt="Twitter" /></a></li>
+            	<li><a href="#" class="tip" title="Wordpress"><img src="images/social-wordpress-32x32.png" alt="Wordpress" /></a></li>
+                <li><a href="#" class="tip" title="Skype"><img src="images/social-skype-32x32.png" alt="Skype" /></a></li>
+                <li><a href="#" class="tip" title="RSS"><img src="images/social-rss-32x32.png" alt="RSS" /></a></li>
+            </ul>
+    		<span id="gotop"><a href="#" title="Back to top">&dagger;</a></span>
+        </div>
+    </div> 
+	<header>
+        <div id="header_wrap">
+            <h1 class="logo"><a href="index.html">Kleenex</a></h1>
+            <nav id="smoothmenu1" class="ddsmoothmenu">
+                <ul>
+                    <li><a href="index.html" class="no-border-left">Home</a></li>
+                    <li><a href="about.html">About</a>
+                    	<ul>
+                        	<li class="no-border-top"><a href="services.html">Services</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a>
+                    <ul>
+                        <li class="no-border-top"><a href="single.html">Single</a></li>
+                    </ul>
+                    </li>
+                    <li><a href="#">Portfolio</a>
+                    <ul>
+                        <li class="no-border-top"><a href="portfolio.html">Portfolio Filterable</a></li>
+                        <li><a href="portfolio2.html">Portfolio 2 Column</a></li>
+                        <li><a href="portfolio3.html">Portfolio 3 Column</a></li>
+                        <li><a href="portfolio4.html">Portfolio 4 Column</a></li>
+                        <li><a href="portfolio-sidebar.html">Portfolio with Sidebar</a></li>
+                        <li><a href="portfolio-detail.html">Portfolio with Detail</a></li>
+                    </ul>
+                    </li>
+                    <li><a href="#">Pages</a>
+                    	<ul>
+                        	<li class="no-border-top"><a href="testimonial.html">Testimonial Page</a></li>
+                            <li><a href="faqs.html">FAQs Page</a></li>
+                            <li><a href="column.html">Column Page</a></li>
+                            <li><a href="fullwidth.html">Fullwidth Page</a></li>
+                            <li><a href="button.html">Button Page</a></li>
+                            <li><a href="list.html">List Page</a></li>
+                            <li><a href="typography.html">Typography Page</a></li>
+                            <li><a href="404page.html">404 Page</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header><!--end:header-->
+	<div id="page_wrap">
+    	<div class="breadcrumbs">
+        	<div class="second">
+            	<h2>Portfolio with sidebar</h2>
+				<span class="left"><a href="index.html">Home</a></span>
+			    <span>&rArr; Portfolio sidebar</span>
+			</div>
+            <form id="searchForm">
+                <fieldset>
+                    <div class="input">
+                        <input type="text" name="s" id="s" value="Enter your search" />
+                    </div>
+                    <input type="submit" id="searchSubmit" value="" />
+                </fieldset>
+            </form>
+		</div><!--end:breadcrumbs-->
+        <div id="page_container">
+        	<div id="container">
+            	<section id="options" class="clearfix">
+                <ul id="filters" class="option-set clearfix" data-option-key="filter">
+                    <li><a href="#filter" data-option-value="*">All</a></li>
+                    <li>/<a href="#filter" data-option-value=".illustration">Illustration</a></li>
+                    <li>/<a href="#filter" data-option-value=".print">Print</a></li>
+                    <li>/<a href="#filter" data-option-value=".motion">Motion</a></li>
+                	<li>/<a href="#filter" data-option-value=".website">Web</a></li>
+              	</ul>
+              </section>
+              <div id="works-container">
+              <div class="element motion mosaic-block-sidebar vid2" data-category="motion"> <a href="http://www.youtube.com/watch?v=LbznJ00auEM" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-1.jpg" alt="Image" /></div>
+              <div class="element illustration mosaic-block-sidebar views-side" data-category="illustration"> <a href="images/preview/work_2_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-2.jpg" alt="Image" /> </div>
+              <div class="element motion mosaic-block-sidebar views-side" data-category="print"> <a href="images/preview/work_3_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-3.jpg" alt="Image" /> </div>
+              <div class="element website mosaic-block-sidebar views-side" data-category="website"> <a href="images/preview/work_4_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-4.jpg" alt="Image" /> </div>
+              <div class="element print mosaic-block-sidebar views-side" data-category="print"> <a href="images/preview/work_5_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-5.jpg" alt="Image" /> </div>
+              <div class="element illustration mosaic-block-sidebar views-side" data-category="illustration"> <a href="http://vimeo.com/1084537&width=700" rel="prettyPhoto[gallery1" title="Vimeo Video" class="mosaic-overlay"></a><img src="images/work/work-6.jpg" alt="Vimeo Video" /> </div>
+              <div class="element illustration mosaic-block-sidebar views-side" data-category="illustration"> <a href="images/preview/work_7_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-7.jpg" alt="Image" /> </div>
+              <div class="element motion mosaic-block-sidebar views-side" data-category="motion"> <a href="images/preview/work_8_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-8.jpg" alt="Image" /> </div>
+              <div class="element motion mosaic-block-sidebar views-side" data-category="motion"> <a href="images/preview/work_9_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-9.jpg" alt="Image" /> </div>
+              <div class="element print mosaic-block-sidebar views-side" data-category="print"> <a href="images/preview/work_10_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-10.jpg" alt="Image" /> </div>
+              <div class="element illustration mosaic-block-sidebar views-side" data-category="illustration"> <a href="images/preview/work_11_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-11.jpg" alt="Image" /> </div>
+              <div class="element illustration mosaic-block-sidebar views-side" data-category="illustration"> <a href="images/preview/work_12_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-12.jpg" alt="Image" /> </div>
+              <div class="element motion mosaic-block-sidebar views-side" data-category="motion"> <a href="images/preview/work_13_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-13.jpg" alt="Image" /> </div>
+              <div class="element website mosaic-block-sidebar views-side" data-category="website"> <a href="images/preview/work_14_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-14.jpg" alt="Image" /> </div>
+              <div class="element print mosaic-block-sidebar views-side" data-category="print"> <a href="images/preview/work_15_l.jpg" rel="prettyPhoto[gallery1]" title="Image Title Here" class="mosaic-overlay"></a><img src="images/work/work-15.jpg" alt="Image" /> </div>
+              </div>
+              <ul class="pagination">
+            	<li class="page">Page 2 of 10</li>
+                <li><a href="#">&laquo;</a></li>
+                <li><a href="#">1</a></li>
+                <li><a href="#" class="active">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">&raquo;</a></li>
+                <li><a href="#">last</a></li>
+            </ul>
+            </div><!--end:container-->
+            <aside>
+            	<div class="whole">
+                	<div id="tabs">
+                       <ul class="filter-title">
+                       	<li><a href="#tab-1">Blog Categories</a></li>
+                        <li><a href="#tab-2">Tag cloud</a></li>
+                       </ul>
+                       <div id="tab-1">
+                       	<ul class="cat">
+                        	<li><a href="#">&rArr; Wordpress theme</a></li>
+                            <li><a href="#">&rArr; Minimal</a></li>
+                            <li><a href="#">&rArr; Web Design</a></li>
+                            <li><a href="#">&rArr; Responsive Theme</a></li>
+                        </ul>
+                       </div>
+                       <div id="tab-2">
+                       	<ul class="cat tag">
+                        	<li><a href="#">PHP</a></li>
+                            <li><a href="#">Javascript</a></li>
+                            <li><a href="#">HTML5/CSS3</a></li>
+                            <li><a href="#">Video</a></li>
+                            <li><a href="#">Grayscale</a></li>
+                            <li><a href="#">Photoshop</a></li>
+                            <li><a href="#">Web</a></li>
+                            <li><a href="#">Editor</a></li>
+                        </ul>
+                       </div>
+                     </div><!-- END: tab -->
+                </div>
+                <div class="whole">
+                	<h3>Recent Post</h3>
+                    <ul class="post">
+                    	<li>
+                        	<a href="blog.html"><img src="images/blog/thumb-blog-1.jpg" alt="" /></a>
+                            <p><a href="blog.html">Sample Post One</a> <br><small>May 30, 2012 3 Comments</small></p>
+                        </li>
+                        <li>
+                        	<a href="blog.html"><img src="images/blog/thumb-blog-2.jpg" alt="" /></a>
+                            <p><a href="blog.html">Sample Post Two</a> <br><small>May 30, 2012 3 Comments</small></p>
+                        </li>
+                        <li>
+                        	<a href="blog.html"><img src="images/blog/thumb-blog-3.jpg" alt="" /></a>
+                            <p><a href="blog.html">Sample Post Three</a> <br><small>May 30, 2012 3 Comments</small></p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="whole">
+                	<h3>Latest work</h3>
+                    <ul class="post">
+                    	<li>
+                        	<a href="blog.html"><img src="images/work/work-thumb-1.jpg" alt="" /></a>
+                            <p><a href="portfolio.html">ThinkMaze</a><br><small>Web Design, Responsive</small></p>
+                        </li>
+                        <li>
+                        	<a href="blog.html"><img src="images/work/work-thumb-2.jpg" alt="" /></a>
+                            <p><a href="portfolio.html">Smile!</a><br><small>Mobile Interface</small></p>
+                        </li>
+                        <li>
+                        	<a href="blog.html"><img src="images/work/work-thumb-3.jpg" alt="" /></a>
+                            <p><a href="portfolio.html">3D Architecture Visualization</a><br><small>Wordpress theme</small></p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="whole">
+                	<h3>Tweets</h3>
+                	<p><a href="#">@louiejie:</a>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac rutrum metus.</p>
+                    <p><a href="#">@John Doe:</a>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac rutrum metus.</p>
+                </div>
+            </aside><!--end:sidebar-->
+        </div><!--end:page_container-->
+    </div><!--end:page_wrap-->
+    <footer>
+    	<div id="footer-wrap">
+        	<span id="totop"><a href="#" title="Back to top">top</a></span>
+        	<div class="one-fourth first">
+            	<h3>Contact Details</h3>
+                <p>Telephone: +1234 567 8910<br>
+					Fax: 1098 765 4321<br>
+					E-mail: <a href="#">louiejiemahusay@gmail.com</a></p>
+                <p>Zone 8, Upper Puerto, Cagayan de Oro City, Philippines</p>    
+                <h3>Sign up for our newsletter</h3>
+                <form action="#" method="POST" class="subs">
+                    <fieldset>
+                        <input type="text" name="emailadd" class="emailadd" value="Type your email address" onBlur="if (this.value == ''){this.value = 'Type your email address'; }" onFocus="if (this.value== 'Type your email address') {this.value = ''; }" />
+                    	<input type="submit" name="submit" value="Go" class="submit" />
+                	</fieldset>
+                </form>
+            </div>
+            <div class="one-fourth">
+            	<h3>Related Links</h3>
+                <ul class="links">
+                	<li><a href="#">html5awesome</a></li>
+                    <li><a href="#">Themeforest</a></li>
+                    <li><a href="#">Mojo Themes</a></li>
+                    <li><a href="#">Webdesignledger</a></li>
+                    <li><a href="#">Smashing Magazine</a></li>
+                    <li><a href="#">Web Appers</a></li>
+					<li><a href="#">The Best Design</a></li>
+                </ul>
+            </div>
+            <div class="one-fourth second">
+            	<h3>Flickr Stream</h3>
+                <ul class="flickr">
+                	<li class="first"><a href="#"><img src="images/flickr/flickr-1.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-2.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-3.jpg" alt="" /></a></li>
+                    <li class="first"><a href="#"><img src="images/flickr/flickr-4.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-5.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-6.jpg" alt="" /></a></li>
+                    <li class="first"><a href="#"><img src="images/flickr/flickr-7.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-8.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/flickr/flickr-9.jpg" alt="" /></a></li>
+                </ul>
+            </div>
+            <div class="one-fourth">
+            	<h3>Any question just contact us!</h3>
+                <form action="#" method="POST" class="quick-contact">
+                    <fieldset>
+                        <input type="text" name="emailadd" class="emailadd" value="Email Address" onBlur="if (this.value == ''){this.value = 'Email Address'; }" onFocus="if (this.value== 'Email Address') {this.value = ''; }" />
+                        <textarea name="message" rows="4" cols="10" onblur="if (this.value == ''){this.value = 'Your Message'; }" onfocus="if (this.value == 'Your Message') {this.value = '';}">Your Message</textarea>
+                        <input type="submit" name="submit" class="submit" value="Send">
+                	</fieldset>
+                </form>
+            </div>
+        </div><!--end:footer-wrap-->
+        <div id="copyright">
+        	<div id="copy-wrap">
+    			<p>&copy; Copyright &copy; 2013.Company name All rights reserved.<a target="_blank" href="http://www.cssmoban.com/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>
+            </div>
+    	</div>
+    </footer><!--end:footer-->
+
+</body>
+</html>

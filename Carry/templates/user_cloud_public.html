@@ -1,0 +1,249 @@
+
+{% extends 'base/base.html' %}
+{% block title %}用户数据{% endblock %}
+{% block script %}
+<style>
+.webuploader-container {
+	position: relative;
+}
+.webuploader-element-invisible {
+	position: absolute !important;
+	clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px,1px,1px,1px);
+}
+.webuploader-pick {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+	background: #00b7ee;
+	padding: 10px 15px;
+	color: #fff;
+	text-align: center;
+	border-radius: 3px;
+	overflow: hidden;
+}
+.webuploader-pick-hover {
+	background: #00a2d4;
+}
+
+.webuploader-pick-disable {
+	opacity: 0.6;
+	pointer-events:none;
+}
+.file_table a{ color:blue; }
+
+
+    /*#editor {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }*/
+    #editor {
+        /*margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;*/
+        width: 1080px;
+        height: 500px;
+        font-size:14px;
+    }
+/* 滚动条 */
+.page-risk-sumary{border: 1px solid #7F7F7F;padding: 10px;overflow-y: scroll;width: 1080px;height: 240px}
+.page-risk-sumary::-webkit-scrollbar{width:8px;}
+.page-risk-sumary::-webkit-scrollbar-track{background-color:#E5E5E5;border-radius: 10px;}
+.page-risk-sumary::-webkit-scrollbar-thumb{background-color:#3A3A3A;border-radius: 10px;}
+.page-risk-sumary::-webkit-scrollbar-thumb:hover {background-color:#5FE3FF}
+.page-risk-sumary::-webkit-scrollbar-thumb:active {background-color:#00aff0}
+</style>
+<!--<link rel="stylesheet" type="text/css" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.3/css/bootstrap.css">-->
+
+<!--引入JS-->
+<!--<script type="text/javascript" src="https://cdn.staticfile.org/jquery/3.3.1/jquery.js"></script>-->
+<!--<script type="text/javascript" src="https://cdn.staticfile.org/webuploader/0.1.1/webuploader.js"></script>-->
+<!--<script type="text/javascript" src="https://cdn.staticfile.org/twitter-bootstrap/4.1.3/js/bootstrap.js"></script>-->
+{% endblock %}
+{% block center_cen %}
+{% load staticfiles %}
+
+<link href="{% static 'css/bootstrap.css' %}" type="text/css" rel="stylesheet" media="screen">
+
+<script type="text/javascript" src="{% static 'js/jquery/3.3.1/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/webuploader.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+<script src="{% static 'js/code_edit/ace.js' %}" type="text/javascript"></script>
+<div style="position:relative;left:3px;top:3px;color:green;" >&nbsp;&nbsp;{{ msg|truncatechars:50 }}</div>
+<div align="center">
+
+    {% if qx >= 2 %}
+    {% if clouds %}
+    <table width="1000">
+        <tr><th width="360">文件名称</th><th width="120">文件大小</th><th width="120">上传者</th><th width="200">上传时间</th><th>文件操作</th></tr>
+    </table>
+    <div class="page-risk-sumary">
+    <table width="1000" class="file_table">
+
+        {% for i in clouds %}
+            <tr><td width="360"><a href="javascript:doPost('{% url 'user_cloud_public_show' %}',{'name':'{{i.2}}','filename':'{{i.0}}'})" title="查看文件">{{ i.0|truncatechars:50 }}</a></td>
+                <td width="120">{{ i.1 }}</td><td width="120">{{ i.2 }}</td><td width="200">{{ i.3 }}</td><td><a href="{% url 'user_cloud_public_download' %}?name={{i.2}}&filename={{i.0}}">下载</a>&nbsp;&nbsp;
+                <a href="javascript:doPost('{% url 'user_cloud_public_delete' %}',{'name':'{{i.2}}','filename':'{{i.0}}'})" onclick="return confirm('确定要删除吗?')">删除</a> </td></tr>
+        {% endfor %}
+    </table>
+    </div><br/>
+    <!--<form action="{% url 'user_cloud_public' %}" method="POST" enctype="multipart/form-data" class="form_upload">-->
+        <!--{% csrf_token %}-->
+        <!--<a href="javascript:;" class="file">上传-->
+            <!--<input type="file" name="file" ></a></form>-->
+    {% else %}
+    <!--<form action="{% url 'user_cloud_public' %}" method="POST" enctype="multipart/form-data" class="form_upload">-->
+        <!--{% csrf_token %}-->
+        <!--<span style="color:green;"><span class="upload">暂无文件！</span>&nbsp;&nbsp;<a href="javascript:;" class="file">上传？-->
+    <!--<input type="file" name="file" id=""></a></span>-->
+        <!--</form>-->
+    <span style="color:green;"><span class="upload">暂无文件！</span></span>
+    {% endif %}
+    <div>
+        <!--用来存放文件信息-->
+        <div id="thelist" class="uploader-list"></div>
+        <div class="progress" style="width:1080px;">         <!-- 进度条 -->
+                <div class="progress-bar progress-bar-striped active" role="progressbar" style="width:0%;"></div>
+        </div>
+        <div class="btns">
+            <div id="picker">上传</div>
+            <!--<button id="ctlBtn" class="btn btn-default">开始上传</button>-->
+        </div>
+    </div>
+    <hr width="1080"/>
+    {% include 'base/user_public.html' %}
+    <br/>
+    {% if file_body %}
+    <!--{% load mvote %}-->
+    <div>
+        {% csrf_token %}
+            <input type="button" onclick="javascript:user_cloud_public_ajax();" value="执行Python代码" style="background-color:orange;">
+        <input type="button" onclick="javascript:editor_enlarge()" value="放大">
+        <br/>
+        <div id="codes_result" style="border:1px solid green;width:1080px;word-wrap:break-word;TEXT-JUSTIFY: inter-ideograph; TEXT-ALIGN: justify;" contenteditable="false"></div>
+            <div id="textarea_codes">
+                <pre id="editor">{{ file_body }}</pre>
+            </div>
+
+    </div>
+
+    {% endif %}
+
+    {% endif %}
+    </div>
+<script type="text/javascript">
+
+function user_cloud_public_ajax(){
+    var user_name = $("#user_info").text();
+    var csrf = $("#csrfmiddlewaretoken input").val();
+    var $codes = $(".ace_line");
+    var codes = "";
+    $.each($codes, function(){
+        codes += $(this).text()+"\n";
+    });
+    codes = codes.replace(new RegExp('<br>','g'),'\n').replace(new RegExp('<div>','g'),'\n').replace(new RegExp('</div>','g'),'\n').replace(new RegExp('&nbsp;','g'),' ');
+    var data = {"user_name":user_name,"csrfmiddlewaretoken":csrf,"codes":codes};
+    $.ajax({
+        type: "POST",
+        url: "{% url 'user_cloud_public_runcode' %}",
+        data:data,
+        dataType: "json",
+        success:function(res){
+            $("#codes_result").html("结果:<br>"+res.result);
+        }
+    });
+}
+$(document).ready(function() {
+        var task_id = WebUploader.Base.guid();        //产生task_id
+        var uploader = WebUploader.create({           //创建上传控件
+            //swf: 'https://cdn.staticfile.org/webuploader/0.1.1/Uploader.swf', //swf位置
+            server: '{% url 'fileupload' %}',                 //接收每一个分片的服务器地址
+            pick: '#picker',                          //填上传按钮的id选择器值
+            auto: true,                               //选择文件后，是否自动上传
+            chunked: true,                            //是否分片
+            chunkSize: 50 * 1024 * 1024,              //每个分片的大小，这里为50M
+            chunkRetry: 3,                            //某分片若上传失败，重试次数
+            threads: 2,                               //线程数量，考虑到服务器，这里就选了1
+            duplicate: true,                          //分片是否自动去重
+            formData: {                               //每次上传分片，一起携带的数据
+                task_id: task_id,
+            },
+        });
+
+        uploader.on('startUpload', function() {       //开始上传时，调用该方法
+            $('.progress-bar').css('width', '0%');
+            $('.progress-bar').text('0%');
+        });
+
+        uploader.on('uploadProgress', function(file, percentage) { //一个分片上传成功后，调用该方法
+            $('.progress-bar').css('width', percentage * 100 - 1 + '%');
+            $('.progress-bar').text(Math.floor(percentage * 100 - 1) + '%');
+        });
+
+        uploader.on('uploadSuccess', function(file) { //整个文件的所有分片都上传成功，调用该方法
+            //上传的信息（文件唯一标识符，文件名）
+            var data = {'task_id': task_id, 'filename': file.source['name'] };
+            $.get('{% url 'fileMerge' %}', data);          //ajax携带data向该url发请求
+            $('.progress-bar').css({'width': '100%','background':'green'});
+            $('.progress-bar').text('上传完成');
+        });
+
+        uploader.on('uploadError', function(file) {   //上传过程中发生异常，调用该方法
+            $('.progress-bar').css({'width': '100%','background':'red'});
+            $('.progress-bar').text('上传失败');
+        });
+
+        uploader.on('uploadComplete', function(file) {//上传结束，无论文件最终是否上传成功，该方法都会被调用
+            $('.progress-bar').removeClass('active progress-bar-striped');
+        });
+
+    });
+
+$(".file").on("change","input[type='file']",function(){
+    var filePath=$(this).val();
+    var sub = $(".form_upload");
+    if(filePath){
+        sub.submit();
+    }else{
+        $(".upload").html("");
+        $(".upload").html("您未上传文件！").show();
+        return false
+    }
+});
+
+function doPost(url,param){
+    var form = document.createElement("form");
+    form.method = "POST";
+    form.action = url;
+    for(var i in param){
+        var input = document.createElement("input");
+        input.setAttribute("name",i);
+        input.setAttribute("value",param[i]);
+        form.appendChild(input);
+    }
+    var input = document.createElement("input");
+    input.setAttribute("name","csrfmiddlewaretoken");
+    input.setAttribute("value",$("input[name='csrfmiddlewaretoken']").val());
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+}
+
+// 代码编辑
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/twilight");
+editor.session.setMode("ace/mode/python");
+
+function editor_enlarge(){
+    $("#editor").css({"width":"90%","height":"90%"});
+    $("#codes_result").css({"width":"90%"});
+}
+
+</script>
+{% endblock %}

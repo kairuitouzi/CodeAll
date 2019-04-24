@@ -1,0 +1,236 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ operation }}{% endblock %}
+{% block script %}
+{% load staticfiles %}
+<link type="text/css" rel="stylesheet" href="{% static 'admin/css/user.css' %}" >
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}"/>
+<script type="text/javascript" src="{% static 'js/jquery-1.7.1.min.js' %}"></script>
+
+
+{% endblock %}
+{% block center_cen %}
+<div style="color:green;" class="msg">&nbsp;&nbsp;{{ msg }}</div>
+<!-- Container -->
+<div id="container">
+    <!-- Content -->
+    <div id="content" class="colM">
+        <h1>修改 {{ operation }}</h1>
+        <!--{% for i in work %}-->
+        <!--{{ i.date }}{{i.title}}{{i.body}}-->
+        <!--{% endfor %}-->
+        <div id="content-main">
+{% if update_work_log %}
+            <form action="{% url 'update_work_log' %}" method="post" id="worklog_form">
+                {% csrf_token %}
+                <input type="hidden" value="{{id}}" name="id">
+                <div>
+                    <fieldset class="module aligned ">
+                        <div class="form-row field-date">
+                            <div>
+                                <label class="required" for="id_date">所属工作日期:</label>
+                                <input type="date" name="date" class="vDateField" size="10" value="{{work.0}}" required id="id_date" />
+                            </div>
+                        </div>
+                        <div class="form-row field-title">
+                            <div>
+                                <label class="required" for="id_title">标题:</label>
+                                <input type="text" name="title" class="vTextField" maxlength="50" required
+                                       id="id_title" value="{{work.1}}"/>
+                            </div>
+                        </div>
+                        <div class="form-row field-body">
+                            <div>
+                                <label class="required" for="id_body">详细内容:</label>
+                                <textarea name="body" cols="40" rows="10" class="vLargeTextField" maxlength="300" required id="id_body">{{work.2|safe}}</textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="submit-row">
+                        <input type="submit" value="保存" class="default" name="_save"/>
+                        <p class="deletelink-box"><a style="height:20px;" onclick="return confirm('确定要删除吗？')" href="{% url 'del_work_log' %}?id={{id}}" class="deletelink">删除</a></p>
+                        <input type="submit" value="保存并增加另一个" name="_addanother"/>
+                        <input type="submit" value="保存并继续编辑" name="_continue"/>
+                    </div>
+                </div>
+            </form>
+
+
+
+{% elif update_simulation_account %}
+
+<form enctype="multipart/form-data" action="{% url 'add_simulation_account' %}" method="post" id="simulationaccount_form">
+    {% csrf_token %}
+<div>
+  <fieldset class="module aligned ">
+
+        <div class="form-row field-host">
+                <div>
+                        <label class="required" for="id_host">交易账号:</label>
+                            <input type="text" name="host" class="vTextField" maxlength="20" required id="id_host" />
+                </div>
+        </div>
+        <div class="form-row field-enabled">
+                <div>
+                        <label class="required" for="id_enabled">状态:</label>
+
+                            <select name="enabled" id="id_enabled">
+  <option value="0" selected>未启用</option>
+  <option value="1">启用</option>
+</select>
+                </div>
+        </div>
+</fieldset>
+
+<div class="submit-row">
+<input type="submit" value="保存" class="default" name="_save" />
+<input type="submit" value="保存并增加另一个" name="_addanother" />
+<input type="submit" value="保存并继续编辑" name="_continue" />
+</div>
+</div>
+</form>
+
+{% elif update_real_account %}
+<form enctype="multipart/form-data" action="{% url 'add_real_account' %}" method="post" id="tradingaccount_form">
+  {% csrf_token %}
+<div>
+  <fieldset class="module aligned ">
+        <div class="form-row field-host">
+                <div>
+                        <label class="required" for="id_host">账户:</label>
+                            <input type="text" name="host" class="vTextField" maxlength="40" required id="id_host" />
+                </div>
+        </div>
+        <div class="form-row field-port">
+                <div>
+                        <label class="required" for="id_port">端口:</label>
+                            <input type="number" name="port" class="vIntegerField" required id="id_port" />
+                </div>
+        </div>
+        <div class="form-row field-license">
+                <div>
+                        <label class="required" for="id_license">许可证:</label>
+                            <input type="text" name="license" class="vTextField" maxlength="30" required id="id_license" />
+                </div>
+        </div>
+        <div class="form-row field-appid">
+                <div>
+                        <label class="required" for="id_appid">ApppID:</label>
+                            <input type="text" name="appid" class="vTextField" maxlength="20" required id="id_appid" />
+                </div>
+        </div>
+        <div class="form-row field-userid">
+                <div>
+                        <label class="required" for="id_userid">用户ID:</label>
+                            <input type="text" name="userid" class="vTextField" maxlength="20" required id="id_userid" />
+                </div>
+        </div>
+</fieldset>
+<div class="submit-row">
+<input type="submit" value="保存" class="default" name="_save" />
+<input type="submit" value="保存并增加另一个" name="_addanother" />
+<input type="submit" value="保存并继续编辑" name="_continue" />
+</div>
+</div>
+</form>
+            {% elif update_info_public %}
+            <form enctype="multipart/form-data" action="" method="POST" id="infopublic_form">
+               {% csrf_token %}
+                <input type="hidden" name="id" value="{{id}}">
+<div>
+  <fieldset class="module aligned ">
+        <div class="form-row field-title">
+                <div>
+                        <label class="required" for="id_title">标题:</label>
+                            <input type="text" name="title" value="{{infopublic}}" class="vTextField" maxlength="50" required id="id_title" />
+                </div>
+
+        </div>
+        <!--<div class="form-row field-body">-->
+                <!--<div>-->
+                        <!--<label class="required" for="id_body">详细内容:</label>-->
+
+                            <!--<textarea name="body" cols="40" rows="10" class="vLargeTextField" maxlength="600" required id="id_body">{{infopublic.1|safe}}</textarea>-->
+                <!--</div>-->
+
+        <!--</div>-->
+</fieldset>
+<div class="submit-row">
+<input type="submit" value="保存" class="default" name="_save" />
+    <p class="deletelink-box"><a style="height:20px;" onclick="return confirm('确定要删除吗？')" href="{% url 'user_info_public_delete' %}?id={{id}}" class="deletelink">删除</a></p>
+<input type="submit" value="保存并增加另一个" name="_addanother" />
+<input type="submit" value="保存并继续编辑" name="_continue" />
+</div>
+</div>
+</form>
+            {% elif user_update_info %}
+            <form action="{% url 'user_update_info' %}" method="post" id="user_form">
+                {% csrf_token %}
+<div>
+
+<fieldset class="module aligned">
+
+<div class="form-row">
+
+  <label class="required" for="id_password1">原密码:</label> <input type="password" name="password0" autofocus required id="id_password0" />
+
+</div>
+<fieldset class="module aligned">
+<div class="form-row field-phone">
+                <div>
+                        <label class="required" for="id_phone">手机号:</label>
+                            <input type="text" name="phone" value="{{phone}}" class="vTextField" maxlength="11" minlength="11" required id="id_phone" />
+                </div>
+        </div>
+        <div class="form-row field-email">
+                <div>
+                        <label for="id_email">邮箱:</label>
+                            <input type="email" name="email" value="{{email}}" class="vTextField" maxlength="36" id="id_email" />
+                </div>
+        </div>
+<div class="form-row">
+
+  <label class="required" for="id_password1">新密码:</label> <input type="password" name="password1" autofocus required id="id_password1" />
+
+</div>
+
+<div class="form-row">
+
+  <label class="required" for="id_password2">新密码(重复):</label> <input type="password" name="password2" required id="id_password2" />
+
+  <div class="help">为了校验，请输入与上面相同的密码。</div>
+
+</div>
+
+</fieldset>
+
+<div class="submit-row">
+<input type="submit" value="确定修改" class="default" />
+</div>
+
+</fieldset></div>
+</form>
+{% endif %}
+
+</div>
+        <br class="clear"/>
+    </div>
+    <div id="footer"></div>
+</div>
+<script>
+    $("#user_form").submit(function(){
+        var password1 = $("#id_password1").val();
+        var password2 = $("#id_password2").val();
+        if(password1.length<6){
+            $(".msg").html("&nbsp;&nbsp;密码太短！");
+            return false;
+        }else if(password1!=password2){
+            $(".msg").html("&nbsp;&nbsp;两次密码输入不一致！");
+            return false;
+        }
+        $("#id_password0").val(hex_md5($("#id_password0").val()));
+        $("#id_password1").val(hex_md5(password1));
+        $("#id_password2").val(hex_md5(password2));
+        return true;
+    });
+</script>
+{% endblock %}

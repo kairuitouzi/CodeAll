@@ -1,0 +1,211 @@
+{% extends 'base/base.html' %}
+{% block title %}回测{% endblock %}
+{% block script %}
+<style>
+        .rotatinglt { margin: 0; padding: 0}
+        .rotatinglt ul {list-style: none;}
+        .rotatinglt ul {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+            transition: all 8s;
+            /*8秒时间转变*/
+            transform-style: preserve-3d;
+            /*放在父盒子内*/
+        }
+        .rotatinglt ul li {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            text-align: center;
+            line-height: 200px;
+            font-size: 28px;
+            color: #fff;
+        }
+        .rotatinglt li:nth-child(1){
+            transform: rotateX(0deg) translateZ(100px);
+            /*translateZ是为了让立方体出现形状*/
+            background-color: rgba(255, 0, 0, 0.6);
+        }
+        .rotatinglt li:nth-child(2){
+            transform: rotateX(-90deg) translateZ(100px);
+            background-color: rgba( 0, 255,0, 0.6);
+        }
+        .rotatinglt li:nth-child(3){
+            transform: rotateX(-180deg) translateZ(100px);
+            background-color: rgba(0,0,255,0.5);
+        }
+        .rotatinglt li:nth-child(4){
+            transform: rotateX(-270deg) translateZ(100px);
+            background-color: rgba(50,50,25,0.5);
+        }
+        .rotatinglt li:nth-child(5){
+            transform: rotateY(-90deg) translateZ(100px);
+            background-color: rgba(255,0,255,0.5);
+        }
+        .rotatinglt li:nth-child(6){
+            transform: rotateY(90deg) translateZ(100px);
+            background-color: rgba(0,255,255,0.5);
+        }
+        .rotatinglt ul:hover{
+            transform :rotateX(360deg) rotateY(720deg);
+        }
+    </style>
+{% endblock %}
+{% block center_cen %}
+<div class="rotatinglt" style="position: relative;left:-400px;top:230px;">
+    <ul>
+    <li class="rotatinglt1">凯瑞</li>
+    <li class="rotatinglt2"></li>
+    <li class="rotatinglt3"></li>
+    <li class="rotatinglt4"></li>
+    <li class="rotatinglt5"></li>
+    <li class="rotatinglt6"></li>
+</ul>
+</div>
+<div id="loadings" align="center"><span style="color:green;"><!--运算中...--></span> </div>
+
+<script>
+var y_loading = {};
+var y_load = document.getElementById("loadings");
+y_loading.Particle = function( opt ) {
+  this.radius = 7;
+  this.x = opt.x;
+  this.y = opt.y;
+  this.angle = opt.angle;
+  this.speed = opt.speed;
+  this.accel = opt.accel;
+  this.decay = 0.01;
+  this.life = 1;
+};
+
+y_loading.Particle.prototype.step = function( i ) {
+  this.speed += this.accel;
+  this.x += Math.cos( this.angle ) * this.speed;
+  this.y += Math.sin( this.angle ) * this.speed;
+  this.angle += y_loading.PI / 64;
+  this.accel *= 1.01;
+  this.life -= this.decay;
+  
+  if( this.life <= 0 ) {
+    y_loading.particles.splice( i, 1 );
+  }
+};
+
+y_loading.Particle.prototype.draw = function( i ) {
+  y_loading.ctx.fillStyle = y_loading.ctx.strokeStyle = 'hsla(' + ( y_loading.tick + ( this.life * 120 ) ) + ', 100%, 60%, ' + this.life + ')';
+  y_loading.ctx.beginPath();
+  if( y_loading.particles[ i - 1 ] ) {
+    y_loading.ctx.moveTo( this.x, this.y );
+    y_loading.ctx.lineTo( y_loading.particles[ i - 1 ].x, y_loading.particles[ i - 1 ].y );
+  }
+  y_loading.ctx.stroke();
+  
+  y_loading.ctx.beginPath();
+  y_loading.ctx.arc( this.x, this.y, Math.max( 0.001, this.life * this.radius ), 0, y_loading.TWO_PI );
+  y_loading.ctx.fill();
+  
+  var size = Math.random() * 1.25;
+  y_loading.ctx.fillRect( ~~( this.x + ( ( Math.random() - 0.5 ) * 35 ) * this.life ), ~~( this.y + ( ( Math.random() - 0.5 ) * 35 ) * this.life ), size, size );
+}
+
+y_loading.step = function() {
+  y_loading.particles.push( new y_loading.Particle({
+    x: y_loading.width / 2 + Math.cos( y_loading.tick / 20 ) * y_loading.min / 2,
+    y: y_loading.height / 2 + Math.sin( y_loading.tick / 20 ) * y_loading.min / 2,
+    angle: y_loading.globalRotation + y_loading.globalAngle,
+    speed: 0,
+    accel: 0.01
+  }));
+  
+  y_loading.particles.forEach( function( elem, index ) {
+    elem.step( index );
+  });
+  
+  y_loading.globalRotation += y_loading.PI / 6;
+  y_loading.globalAngle += y_loading.PI / 6;
+};
+
+y_loading.draw = function() {
+  y_loading.ctx.clearRect( 0, 0, y_loading.width, y_loading.height );
+  
+  y_loading.particles.forEach( function( elem, index ) {
+    elem.draw( index );
+  });
+};
+
+y_loading.init = function() {
+  y_loading.canvas = document.createElement( 'canvas' );
+  y_loading.ctx = y_loading.canvas.getContext( '2d' );
+  y_loading.width = 300;
+  y_loading.height = 300;
+  y_loading.canvas.width = y_loading.width * window.devicePixelRatio;
+  y_loading.canvas.height = y_loading.height * window.devicePixelRatio;
+  y_loading.canvas.style.width = y_loading.width + 'px';
+  y_loading.canvas.style.height = y_loading.height + 'px';
+  y_loading.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  y_loading.min = y_loading.width * 0.5;
+  y_loading.particles = [];
+  y_loading.globalAngle = 0;
+  y_loading.globalRotation = 0;
+  y_loading.tick = 0;
+  y_loading.PI = Math.PI;
+  y_loading.TWO_PI = y_loading.PI * 2;
+  y_loading.ctx.globalCompositeOperation = 'lighter';
+  y_load.appendChild( y_loading.canvas );
+  y_loading.loop();
+};
+
+y_loading.loop = function() {
+  requestAnimationFrame( y_loading.loop );
+  y_loading.step();
+  y_loading.draw();
+  y_loading.tick++;
+};
+
+y_loading.init();
+
+var su_url = "{{rq_url}}";
+var start_time = new Date();
+
+function ajax_get(){
+    $.ajax({
+        type: "GET",
+        url: su_url,
+        //data: data,
+        dataType: "json",
+        success: function(res){
+            if(res.s == 1){
+                window.location.href=su_url;
+            }else if(res.s == 0){
+                window.location.href="{% url 'index' %}";
+            }else{
+                var this_time = new Date();
+                $(".rotatinglt1").text("运算中...");
+                $(".rotatinglt3").text(parseInt((this_time.getTime()-start_time.getTime())/1000)+"秒");
+
+                if(res.t){
+                    $(".rotatinglt2").text(res.t);
+                    $(".rotatinglt4").text("盈亏："+parseInt(res.m));
+                    $(".rotatinglt5").text("多单："+res.d);
+                    $(".rotatinglt6").text("空单："+res.k);
+                }
+            }
+        }
+    });
+}
+
+function request_load_ajax(){
+    //var data={"host":"{{host}}","when":"{{when}}"};
+    //var rq_url = "{{rq_url}}";
+
+    var interval_time = 1000;
+    setTimeout("ajax_get()",1000);
+    setInterval("ajax_get()",3000);
+
+}
+request_load_ajax();
+</script>
+
+{% endblock %}

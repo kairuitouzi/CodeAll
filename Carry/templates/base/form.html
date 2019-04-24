@@ -1,0 +1,225 @@
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/radio.css' %}" />
+<script type="text/javascript" src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+<style>
+    .button {
+    display: inline-block;
+	outline: none;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	font: 16px/100% 'Microsoft yahei',Arial, Helvetica, sans-serif;
+	padding: .3em 1em .3em;
+	text-shadow: 0 1px 1px rgba(0,0,0,.3);
+	-webkit-border-radius: .5em;
+	-moz-border-radius: .5em;
+	border-radius: .5em;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	margin-right:10px;
+}
+
+/* green */
+.green {
+	color: #e8f0de;
+	border: solid 1px #538312;
+	background: #64991e;
+	width:90px;
+	background: -webkit-gradient(linear, left top, left bottom, from(#7db72f), to(#4e7d0e));
+	background: -moz-linear-gradient(top,  #7db72f,  #4e7d0e);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#7db72f', endColorstr='#4e7d0e');
+}
+.green:hover {
+	background: #538018;
+	background: -webkit-gradient(linear, left top, left bottom, from(#6b9d28), to(#436b0c));
+	background: -moz-linear-gradient(top,  #6b9d28,  #436b0c);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#6b9d28', endColorstr='#436b0c');
+}
+.green:active {
+	color: #a9c08c;
+	background: -webkit-gradient(linear, left top, left bottom, from(#4e7d0e), to(#7db72f));
+	background: -moz-linear-gradient(top,  #4e7d0e,  #7db72f);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#4e7d0e', endColorstr='#7db72f');
+}
+.radio_label{
+    margin-bottom: 10px;
+}
+</style>
+
+
+<form action="" method="GET" id="tongji_form">
+    <div align="center">
+    <table>
+    <tr>
+        <td><label class="radio_label">
+        <input type="radio" class="radio_radio" name="when" value="d" {% if when == 'd' %}checked{% endif %} />
+        <span class="radio_radioInput"></span>当天</label></td>
+        <td><label class="radio_label">
+        <input type="radio" class="radio_radio" name="when" value="w" {% if when == 'w' %}checked{% endif %} />
+        <span class="radio_radioInput"></span>当周</label></td>
+        <td><label class="radio_label">
+        <input type="radio" class="radio_radio" name="when" value="m" {% if when == 'm' %}checked{% endif %} />
+        <span class="radio_radioInput"></span>当月</label></td>
+        <td><label class="radio_label">
+        <input type="radio" class="radio_radio" name="when" value="0" {% if when == '0' %}checked{% endif %} />
+        <span class="radio_radioInput"></span>指定日期</label></td>
+        <td>开始日期：<input type="date" value="{{ dates }}" name="datetimes" id="J-xl"/>
+        </td>
+        <td>结束日期：<input type="date" id="rq_ts" name="end_date" value="{{end_date}}" >&nbsp;&nbsp;&nbsp;</td>
+        <td>
+            ID 或 名称： <select name="id" id="select_id">
+    {% load mvote %}
+        {% for id in ids %}
+            {% if forloop.first %}
+                {% if rq_id == '0' or rq_id == None %}
+                    <option value="{{ rq_id }}">全  部</option>
+                    <option value="{{ id }}">{{ id_name|name_option:id }}</option>
+                {% else %}
+                    <option value="{{ rq_id }}">{{ id_name|name_option:rq_id }}</option>
+                    <option value="0">全  部</option>
+                    <option value="{{ id }}">{{ id_name|name_option:id }}</option>
+                {% endif %}
+            {% else %}
+                <option value="{{ id }}">{{ id_name|name_option:id }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+        </td></tr>
+
+    </table>
+    </div>
+ <div style="margin-left:30%;"><br/>
+     <div>
+     <input type="button" onclick="javascript:doSubmitForm(1)" class="button green" value="模拟交易">
+     <input type="button" onclick="javascript:tongjiss()" class="button green" value="当前交易">
+    <input type="button" onclick="javascript:doSubmitForm(4)" class="button green" value="实盘交易">
+         <a href="javascript:pageChoice('up');" class="button green" >上一天</a>
+        <a href="javascript:pageChoice('down');" class="button green" >下一天</a>
+    <input type="button" onclick="JavaScript:window.history.back();" class="button green"  value="返回">
+     </div>
+     <a style="position:relative;left:20px;" href="{% url 'account_update' %}" ><img width="30" src="{% static 'images/b9.ico' %}" title="刷新"></a>
+ </div>
+    <!--<div style="margin-left:45%;margin-top:0;"><br/>-->
+        <!--{% if dates == end_date %}-->
+        <!--<a href="javascript:pageChoice('up');" class="button green" >昨&nbsp;&nbsp;天</a>-->
+        <!--<a href="javascript:pageChoice('down');" class="button green" >明&nbsp;&nbsp;天</a>-->
+         <!--{% endif %}-->
+    <!--</div>-->
+</form>
+<script type="text/javascript">
+function pageChoice(type){
+   var url = window.location.href; //?datetimes=2018-07-31&id=0&type=1&end_date=2018-07-31&when=0&page=down' {% url 'tongji' %}?datetimes={{ i.0 }}&id={{ i.1 }}&rq_ts={{ end_date }}
+        //+ '&page='+type;
+   if(url.indexOf("type=")>0){
+       var tp = new RegExp("(^|&)type=([^&]*)(&|$)", "i");
+       tp = window.location.search.substr(1).match(tp);
+       tp = unescape(tp[2]);
+    url = "{% url 'tongji' %}?datetimes={{ dates }}&id={{ rq_id }}&type="+tp+"&end_date={{ end_date }}"+"&page="+type;
+    window.location.href = url;
+   }
+}
+function doSubmitForm(ty){
+        if(ty==null){
+        var tongji_form=document.getElementById('tongji_form');
+        tongji_form.submit();
+        }else if(ty==1){
+        // 模拟
+        var date=document.getElementById('J-xl').value;
+        var id=document.getElementById('select_id').value;
+        var rq_ts=document.getElementById('rq_ts').value;
+        var when_r = document.getElementsByName('when');
+        var when = "0";
+        for(var i=0;i<when_r.length;i++){
+            if(when_r[i].checked){
+                when=when_r[i].value;
+                break;
+            }
+        }
+        window.location.href='{% url 'tongji' %}?datetimes='+date+'&id='+id+'&type=1'+'&end_date='+rq_ts+'&when='+when;
+        }else if(ty==2){
+            window.location.href='{% url 'tongji' %}?type=3';
+        }else if(ty==4){
+        // 实盘
+            var date=document.getElementById('J-xl').value;
+        var id=document.getElementById('select_id').value;
+        var rq_ts=document.getElementById('rq_ts').value;
+        var when = document.getElementsByName('when');
+        for(var i=0;i<when.length;i++){
+            if(when[i].checked){
+                when=when[i].value;
+                break;
+            }
+        }
+        window.location.href='{% url 'tongji' %}?datetimes='+date+'&id='+id+'&type=4'+'&end_date='+rq_ts+'&when='+when;
+        }
+     }
+
+function myajaxs(){
+        $.ajax({
+            type: 'GET',
+            url: '{% url 'tongji' %}?type=3',
+            dataType: 'json',
+            success: function(res){
+                var html = "";
+                if(res.monijy.length>0){
+                    var data = res.monijy;
+                    html += "<table border='1' width='1080px'><br/><thead>模拟交易</thead>";
+                    html += "<tr><th>名称</th><th>交易时间</th><th>价格</th><th>多空</th><th>手数</th><th>状态</th><th>止损</th><th>止盈</th></tr>";
+                    for (var i=0;i<data.length;i++){
+                        html += i%2==0? "<tr bgcolor='#aaf'>": "<tr bgcolor='#ccf'>";
+                        for (var j=0;j<data[i].length;j++){
+                                html += "<td>"+data[i][j]+"</td>";
+                        }
+                        html += "</tr>";
+                    }
+                    html += "</table>";
+
+                }
+                html += "<br/>"
+                if(res.sjjy.length>0){
+                    if(res.ssjygd.length>0){
+                        var data = res.ssjygd;
+                        html += "<table border='1' width='1080px'><thead>实盘交易挂单</thead>";
+                        html += "<th>时间</th><th>合约</th><th>价格</th><th>止损价</th><th>订单编号</th><th>剩余数量</th><th>已成交数量</th><th>总数量</th><th>用户</th><th>买卖</th><th>状态</th>";
+                        for (var i=0;i<data.length;i++){
+                            html += i%2==0? "<tr bgcolor='#aaf'>": "<tr bgcolor='#ccf'>";
+                            for (var j=0;j<data[i].length;j++){
+                                html += "<td>"+data[i][j]+"</td>";
+                            }
+                            html += "</tr>";
+                        }
+                        html += "</table>";
+                    }
+                    var data = res.sjjy;
+                    html += "<table border='1' width='1080px'><thead>实盘交易记录（当天）</thead>";
+                    html += "<tr><td>时间</td><td>成交价格</td><td>成交记录号</td><td>成交手数</td><td>产品代码</td><td>交易账户</td><td>买卖</td>";
+                    html += "<td width='100'>状态</td><td>下单价格</td><td>总量</td><td>剩余量</td><td>成交量</td><td>订单号</td><td>持仓</td><td>平仓总盈亏</td></tr>";
+                    for (var i=0;i<data.length;i++){
+                        html += i%2==0? "<tr bgcolor='#aaf'>": "<tr bgcolor='#ccf'>";
+                        for (var j=0;j<data[i].length;j++){
+                            if(j==5 && data[i][0]==0){
+                                html += "<td><a style='color:red;' href='/tj/?type=4&user="+data[i][j]+"'>"+data[i][j]+"</a></td>";
+                            }else if(data[i][0]==0){
+                                html += "<td></td>";
+                            }else{
+                                html += "<td>"+data[i][j]+"</td>";
+                            }
+                        }
+                        html += "</tr>";
+                    }
+                    html += "</table>";
+                }
+                $("#tongji").html(html);
+            },
+            error: function (errorMsg) {
+                //alert(errorMsg);
+        }
+        });
+}
+
+function tongjiss(){
+    myajaxs();
+    var t = setInterval("myajaxs()",10000);
+}
+</script>
